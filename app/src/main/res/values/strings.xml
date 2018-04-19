@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Reversi</string>
+    <string name="salir">Salir</string>
+    <string name="comenzar_partida">Comenzar Partida</string>
+    <string name="ayuda">Ayuda</string>
+    <string name="descripcion_juego">El Juego El juego se inicia con cuatro fichas posicionadas en el centro del tablero en forma de un cuadrado, dos mostrando el lado blanco hacia arriba y dos el lado negro. El primer movimiento lo realiza el jugador con las fichas negras. Colocando fichas Para que un jugador pueda colocar una ficha en una casilla del tablero, es necesario que haya por lo menos una línea recta (horizontal, vertical o diagonal) sin espacios vacíos entre la posición que el jugador desea y otra ficha de su color, y que haya una o más fichas del oponente entre ellas. Quando un jugador haga una jugada válida, todas las fichas del oponente que estén en una línea recta (horizontal, vertical o diagonal) con la pieza recién colocada y entre la pieza recién colocada y otra pieza del jugador que hizo el movimiento, serán giradas y pasan a ser del color de ese jugador. Fin de la Partida El juego termina cuando ninguno de los jugadores pueda hacer movimientos (por ejemplo, cuando todas las casas estén ocupadas o todas las fichas del tablero estén con el mismo color girado hacia arriba). Vence el jugador que posea más fichas que el adversario. Si ambos jugadores tienen la misma cantidad de fichas, el juego termina en empate.</string>
+    <string name="volver">Volver</string>
+    <string name="alias_identificativo">Alias identificativo:</string>
+    <string name="medida_de_la_parrilla">Medida de la parrilla:</string>
+    <string name="default_medida">4</string>
 </resources>

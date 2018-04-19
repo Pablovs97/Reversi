@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="start">
+
+    <TextView
+        android:id="@+id/alias"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/alias_identificativo"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/user"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_below="@+id/alias"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/user" />
+
+    <EditText
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/user"
+        android:layout_below="@+id/alias"
+        android:id="@+id/alias_et"
+        android:inputType="text" />
+
+    <TextView
+        android:id="@+id/medida"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/alias_et"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/medida_de_la_parrilla"
+        android:textStyle="bold"
+        android:textColor="@color/black"/>
+
+    <ImageView
+        android:id="@+id/parrilla"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_below="@+id/medida"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/parrilla" />
+
+    <TextView
+        android:id="@+id/medida_v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_toEndOf="@+id/seekBar"
+        android:layout_below="@+id/medida"
+        android:textStyle="bold"
+        android:text="@string/default_medida"
+        android:gravity="center"
+        android:textColor="@color/black"/>
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="222dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/medida"
+        android:layout_marginStart="-5dp"
+        android:layout_marginTop="10dp"
+        android:layout_toEndOf="@+id/parrilla"/>
+
+
+</RelativeLayout>
