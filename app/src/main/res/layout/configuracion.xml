@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="start">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
 
     <TextView
         android:id="@+id/alias"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="20dp"
-        android:text="@string/alias_identificativo"
+        android:layout_marginLeft="5dp"
+        android:text="@string/alias"
         android:textColor="@color/black"
+        android:textSize="17sp"
         android:textStyle="bold" />
 
     <ImageView
@@ -24,11 +23,11 @@
         android:src="@drawable/user" />
 
     <EditText
+        android:id="@+id/alias_et"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/user"
         android:layout_below="@+id/alias"
-        android:id="@+id/alias_et"
+        android:layout_toEndOf="@+id/user"
         android:inputType="text" />
 
     <TextView
@@ -39,8 +38,9 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="15dp"
         android:text="@string/medida_de_la_parrilla"
-        android:textStyle="bold"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        android:textStyle="bold" />
 
     <ImageView
         android:id="@+id/parrilla"
@@ -55,14 +55,14 @@
         android:id="@+id/medida_v"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/medida"
         android:layout_marginStart="5dp"
         android:layout_marginTop="15dp"
         android:layout_toEndOf="@+id/seekBar"
-        android:layout_below="@+id/medida"
-        android:textStyle="bold"
-        android:text="@string/default_medida"
         android:gravity="center"
-        android:textColor="@color/black"/>
+        android:text="@string/default_medida"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
 
     <SeekBar
         android:id="@+id/seekBar"
@@ -71,7 +71,34 @@
         android:layout_below="@+id/medida"
         android:layout_marginStart="-5dp"
         android:layout_marginTop="10dp"
-        android:layout_toEndOf="@+id/parrilla"/>
+        android:layout_toEndOf="@+id/parrilla" />
 
+    <TextView
+        android:id="@+id/tiempo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/parrilla"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:text="@string/control_del_tiempo"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/tiempo_img"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_below="@+id/tiempo"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/tiempo" />
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tiempo"
+        android:layout_toEndOf="@+id/tiempo_img" />
 
 </RelativeLayout>
