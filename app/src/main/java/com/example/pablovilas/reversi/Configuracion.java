@@ -25,7 +25,7 @@ public class Configuracion extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                value.setText(String.valueOf(( 2 + progress*2 ) + 2 ));
+                value.setText(String.valueOf(( progress*2 ) + 4 ));
             }
 
             @Override
