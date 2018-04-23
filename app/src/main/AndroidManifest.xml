@@ -11,5 +11,6 @@
         </activity>
         <activity android:name=".Configuracion" android:label="Configuración"/>
         <activity android:name=".Ayuda" android:label="Ayuda" />
+        <activity android:name=".Juego" />
     </application>
 </manifest>
