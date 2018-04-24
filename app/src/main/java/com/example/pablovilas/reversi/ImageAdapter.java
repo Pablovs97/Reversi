@@ -7,13 +7,12 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 public class ImageAdapter extends BaseAdapter {
     private Context context;
     private Cell[][] board;
 
-    public ImageAdapter(Context context, Cell[][] board) {
+    ImageAdapter(Context context, Cell[][] board) {
         this.context = context;
         this.board = board;
     }
@@ -61,7 +60,7 @@ public class ImageAdapter extends BaseAdapter {
             imageButton.setImageResource(R.drawable.cell_background);
         }
 
-        //imageButton.setOnClickListener();
+        imageButton.setOnClickListener(new CellListener(context, position, this.board[x][y]));
 
         return imageButton;
     }
