@@ -11,10 +11,12 @@ import android.widget.ImageView;
 public class ImageAdapter extends BaseAdapter {
     private Context context;
     private Cell[][] board;
+    Juego juego;
 
-    ImageAdapter(Context context, Cell[][] board) {
+    ImageAdapter(Context context, Cell[][] board, Juego juego) {
         this.context = context;
         this.board = board;
+        this.juego = juego;
     }
 
     @Override
@@ -60,7 +62,7 @@ public class ImageAdapter extends BaseAdapter {
             imageButton.setImageResource(R.drawable.cell_background);
         }
 
-        imageButton.setOnClickListener(new CellListener(context, position, this.board[x][y]));
+        imageButton.setOnClickListener(new CellListener(context, new Position(x, y), this.board[x][y], juego));
 
         return imageButton;
     }
