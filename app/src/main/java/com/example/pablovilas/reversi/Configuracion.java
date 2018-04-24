@@ -19,7 +19,7 @@ public class Configuracion extends AppCompatActivity {
     private TextView value;
     private TextView time_tv;
     private CheckBox checkBox;
-    private int time = 15;
+    private int time = 30;
     private final int[] values = {4, 6, 8, 10, 12, 14, 16};
 
     @Override
@@ -40,7 +40,7 @@ public class Configuracion extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 value.setText(String.valueOf(values[progress]));
-                time = 15*(progress+1);
+                time = 30*(progress+1);
                 time_tv.setText(String.format(getString(R.string.tiempo_segundos), String.valueOf(time)));
             }
 
