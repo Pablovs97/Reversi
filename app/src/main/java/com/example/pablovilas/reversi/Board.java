@@ -1,5 +1,6 @@
 package com.example.pablovilas.reversi;
 
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class Board {
@@ -18,6 +19,13 @@ public class Board {
         initBoard();
     }
 
+    Board(Board other) {
+        this.medida = medida;
+        this.cells = new Cell[medida][medida];
+        this.black = 0;
+        this.white = 0;
+    }
+
     private void initBoard() {
         for (int i = 0; i < medida; i++) {
             for (int j = 0; j < medida; j++) {
@@ -33,6 +41,47 @@ public class Board {
         this.sumar(2, "Black");
         this.sumar(2, "White");
     }
+
+    public Cell[][] getCells(){
+        Cell[][] copy = new Cell[medida][medida];
+        for (int i = 0; i < medida; i++) {
+            for (int j = 0; j < medida; j++) {
+                if (this.cells[i][j].isWhite()){
+                    copy[i][j] = Cell.white();
+                } else if (this.cells[i][j].isBlack()){
+                    copy[i][j] = Cell.black();
+                } else if (this.cells[i][j].isHint()){
+                    copy[i][j] = Cell.hint();
+                } else if (this.cells[i][j].isEmpty()){
+                    copy[i][j] = Cell.empty();
+                }
+            }
+        }
+        return copy;
+    }
+
+    public void setCells(Cell[][] cells){
+        for (int i = 0; i < medida; i++) {
+            for (int j = 0; j < medida; j++) {
+                if (cells[i][j].isWhite()){
+                    this.cells[i][j] = Cell.white();
+                } else if (cells[i][j].isBlack()){
+                    this.cells[i][j] = Cell.black();
+                } else if (cells[i][j].isHint()){
+                    this.cells[i][j] = Cell.hint();
+                } else if (cells[i][j].isEmpty()){
+                    this.cells[i][j] = Cell.empty();
+                }
+            }
+        }
+    }
+
+    public void setStartRoundValues(Cell[][] initial, int initial_whites, int initial_blacks){
+        this.setCells(initial);
+        this.white = initial_whites;
+        this.black = initial_blacks;
+    }
+
 
     public int size(){
         return medida;

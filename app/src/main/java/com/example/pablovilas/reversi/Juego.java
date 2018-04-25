@@ -3,6 +3,7 @@ package com.example.pablovilas.reversi;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -21,7 +22,7 @@ public class Juego extends AppCompatActivity {
     public State state;
     GridView gv;
     ImageAdapter adapter;
-    TextView tv1, tv2, tv3;
+    TextView tv1, tv2, tv3, tv5;
     TextView textTimer;
 
     @Override
@@ -32,6 +33,8 @@ public class Juego extends AppCompatActivity {
         tv1 = (TextView) findViewById(R.id.tv1);
         tv2 = (TextView) findViewById(R.id.tv2);
         tv3 = (TextView) findViewById(R.id.tv3);
+        tv5 = (TextView) findViewById(R.id.tv5);
+
 
         Intent intent = getIntent();
 
@@ -65,7 +68,7 @@ public class Juego extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null){
-            board.cells = (Cell[][]) savedInstanceState.getSerializable("Board");
+            board.setCells((Cell[][]) savedInstanceState.getSerializable("Board"));
             adapter = new ImageAdapter(this, board.cells, this);
             gv.setAdapter(adapter);
         }
@@ -75,8 +78,7 @@ public class Juego extends AppCompatActivity {
         new CountDownTimer(tiempo * 1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
-                String text = String.format("Time Remaining %02d:%02d",
-                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) % 60, TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) % 60);
+                String text = String.format("Time Remaining %02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) % 60, TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) % 60);
                 textTimer.setText(text);
             }
 
@@ -108,14 +110,28 @@ public class Juego extends AppCompatActivity {
     }
 
     public void turnoCPU(){
+        setHints();
+        final Cell[][] initial = this.board.getCells();
+        int initial_whites = this.board.white;
+        int initial_blacks = this.board.black;
+        int maxNumFichas = 0;
+        Position pos = new Position(0,0);
+
         for (int i = 0; i < medida; i++) {
             for (int j = 0; j < medida; j++) {
-                if (this.board.cells[i][j].isHint()) {
-                    this.move(new Position(i, j));
-                    return;
+                if (this.board.getCells()[i][j].isHint()) {
+                    int numFichas = this.numFichas(new Position(i, j), initial_whites);
+                    if(numFichas > maxNumFichas){
+                        maxNumFichas = numFichas;
+                        pos = new Position(i, j);
+                    }
+                    this.board.setStartRoundValues(initial, initial_whites, initial_blacks);
                 }
             }
         }
+        tv5.append("(" + String.valueOf(pos.getRow()) + "," + String.valueOf(pos.getColumn()) + ") " + String.valueOf(maxNumFichas) + "\n");
+        this.board.setStartRoundValues(initial, initial_whites, initial_blacks);
+        this.move(pos);
     }
 
     public boolean isFinished() {
@@ -216,6 +232,15 @@ public class Juego extends AppCompatActivity {
         } else if (!canPlay(this.state)){
             this.state = State.FINISHED;
         }
+        if(this.state == State.WHITE) {
+            turnoCPU();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    updateGrid();
+                }
+            }, 3000);
+        }
     }
 
     private State getJugadorContrario() {
@@ -241,5 +266,17 @@ public class Juego extends AppCompatActivity {
         tv2.setText(String.valueOf(this.board.white));
     }
 
+    public int numFichas(Position position, int numWhites){
+        if (!this.board.isEmpty(position)) {
+            return -1;
+        }
+        boolean[] directions = this.directionsOfReverse(this.state, position);
+        if (allFalse(directions)) {
+            return -1;
+        }
+        this.disk(position);
+        this.reverse(position, directions);
+        return this.board.white - numWhites;
+    }
 
 }
