@@ -4,6 +4,8 @@ public class Cell {
 
     private static final char WHITE = 'w';
     private static final char BLACK = 'b';
+    private static final char NEW_WHITE = 'a';
+    private static final char NEW_BLACK = 's';
     private static final char HINT = 'h';
     private static final char EMPTY = '·';
 
@@ -34,11 +36,19 @@ public class Cell {
     }
 
     public boolean isWhite() {
-        return this.state == WHITE;
+        return this.state == WHITE || this.state == NEW_WHITE;
+    }
+
+    public boolean isNewBlack() {
+        return this.state == NEW_BLACK;
+    }
+
+    public boolean isNewWhite() {
+        return this.state == NEW_WHITE;
     }
 
     public boolean isBlack() {
-        return this.state == BLACK;
+        return this.state == BLACK || this.state == NEW_BLACK;
     }
 
     public boolean isHint() {
@@ -55,6 +65,18 @@ public class Cell {
 
     public void setBlack() {
         this.state = BLACK;
+    }
+
+    public void setNewWhite() {
+        this.state = NEW_WHITE;
+    }
+
+    public void setNewBlack() {
+        this.state = NEW_BLACK;
+    }
+
+    public void setEmpty() {
+        this.state = EMPTY;
     }
 
     public void reverse() {

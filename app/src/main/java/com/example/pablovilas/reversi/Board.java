@@ -183,11 +183,11 @@ public class Board {
 
     private void changeColors(Position position) {
         if (this.cells[position.getRow()][position.getColumn()].isBlack()) {
-            this.cells[position.getRow()][position.getColumn()].setWhite();
+            this.cells[position.getRow()][position.getColumn()].setNewWhite();
             this.restar(1, "Black");
             this.sumar(1, "White");
         } else {
-            this.cells[position.getRow()][position.getColumn()].setBlack();
+            this.cells[position.getRow()][position.getColumn()].setNewBlack();
             this.sumar(1, "Black");
             this.restar(1, "White");
         }

@@ -11,4 +11,9 @@
     <string name="control_del_tiempo">Control del tiempo</string>
     <string name="tiempo_segundos">(%s segundos)</string>
     <string name="comenzar">Comenzar</string>
+    <string name="dia_y_hora">Dia y hora</string>
+    <string name="valores_del_log">Valores del log</string>
+    <string name="e_mail_destinatario">E-mail destinatario</string>
+    <string name="enviar_email">Enviar email</string>
+    <string name="nueva_partida">Nueva partida</string>
 </resources>

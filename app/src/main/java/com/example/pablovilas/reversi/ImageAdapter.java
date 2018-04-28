@@ -1,6 +1,7 @@
 package com.example.pablovilas.reversi;
 
 import android.content.Context;
+import android.graphics.drawable.AnimationDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -8,7 +9,9 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-public class ImageAdapter extends BaseAdapter {
+import java.io.Serializable;
+
+public class ImageAdapter extends BaseAdapter implements Serializable{
     private Context context;
     private Cell[][] board;
     Juego juego;
@@ -52,13 +55,21 @@ public class ImageAdapter extends BaseAdapter {
         int x = position % this.board.length;
         int y = position / this.board.length;
 
-        if (this.board[x][y].isWhite()){
+         if (this.board[x][y].isNewBlack()){
+            imageButton.setBackgroundResource(R.drawable.flip_w_to_b);
+            AnimationDrawable ad = (AnimationDrawable) imageButton.getBackground();
+            ad.start();
+         } else if (this.board[x][y].isNewWhite()){
+            imageButton.setBackgroundResource(R.drawable.flip_b_to_w);
+            AnimationDrawable ad = (AnimationDrawable) imageButton.getBackground();
+            ad.start();
+         } else if (this.board[x][y].isWhite()){
             imageButton.setImageResource(R.drawable.cell_white);
         } else if (this.board[x][y].isBlack()){
             imageButton.setImageResource(R.drawable.cell_black);
-        } else if (this.board[x][y].isHint()){
-            imageButton.setImageResource(R.drawable.cell_move);
-        } else if (this.board[x][y].isEmpty()){
+        } else if (this.board[x][y].isHint() && this.juego.state == State.BLACK){
+            imageButton.setImageResource(R.drawable.cell_hint);
+        } else if (this.board[x][y].isEmpty() || this.juego.state == State.WHITE){
             imageButton.setImageResource(R.drawable.cell_background);
         }
 

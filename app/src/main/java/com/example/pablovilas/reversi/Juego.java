@@ -1,15 +1,29 @@
 package com.example.pablovilas.reversi;
+/*
+LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.like_popup, (ViewGroup) activity.findViewById(R.id.like_popup_layout));
+        ImageView imageView = (ImageView) layout.findViewById(R.id.like_popup_iv);
+        imageView.setBackgroundResource(R.drawable.white_delete_icon);
 
+        Toast toast = new Toast(activity.getApplicationContext());
+        toast.setGravity(Gravity.BOTTOM, 0, 200);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+
+        <?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+  <solid android:color="#60000000" />
+    <corners android:radius="8dp" />
+</shape>
+*/
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
-
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Juego extends AppCompatActivity {
@@ -24,6 +38,7 @@ public class Juego extends AppCompatActivity {
     ImageAdapter adapter;
     TextView tv1, tv2, tv3, tv5;
     TextView textTimer;
+    CountDownTimer cd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +49,6 @@ public class Juego extends AppCompatActivity {
         tv2 = (TextView) findViewById(R.id.tv2);
         tv3 = (TextView) findViewById(R.id.tv3);
         tv5 = (TextView) findViewById(R.id.tv5);
-
 
         Intent intent = getIntent();
 
@@ -63,28 +77,63 @@ public class Juego extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable("Board", board.cells);
+        //outState.putString("Tiempo", this.textTimer.getText().toString());
+        outState.putInt("Tiempo", tiempo);
+        cd.cancel();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null){
-            board.setCells((Cell[][]) savedInstanceState.getSerializable("Board"));
+            board.cells = (Cell[][]) savedInstanceState.getSerializable("Board");
             adapter = new ImageAdapter(this, board.cells, this);
+            //textTimer.setText(savedInstanceState.getString("Tiempo"));
+            tiempo = (int) savedInstanceState.getInt("Tiempo");
+            cd.start();
             gv.setAdapter(adapter);
         }
     }
 
+/*
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        cd.cancel();
+        outState.putString("Tiempo", this.textTimer.getText().toString());
+        outState.putSerializable("Board", this.board.getCells());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        cd.start();
+        if (savedInstanceState != null){
+            board.setCells((Cell[][]) savedInstanceState.getSerializable("Board"));
+            textTimer.setText(savedInstanceState.getString("Tiempo"));
+            adapter = new ImageAdapter(this, board.cells, this);
+            gv.setAdapter(adapter);
+        }
+    }
+*/
+    public void goToResults(){
+        Intent intent = new Intent(this, Resultados.class);
+        intent.putExtra("Log", "Alias: " + this.alias + "\nMedida parrilla: " + String.valueOf(this.medida) + "\nTiempo total");
+        finish();
+        startActivity(intent);
+    }
+
     public void startTimer(){
-        new CountDownTimer(tiempo * 1000, 1000) {
+        cd = new CountDownTimer(tiempo * 1000, 1000) {
 
             public void onTick(long millisUntilFinished) {
                 String text = String.format("Time Remaining %02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) % 60, TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) % 60);
                 textTimer.setText(text);
+                tiempo--;
             }
 
             public void onFinish() {
                 textTimer.setText("Time's up!");
-                state = State.FINISHED;
+                goToResults();
             }
 
         }.start();
@@ -100,10 +149,14 @@ public class Juego extends AppCompatActivity {
         for (int i = 0; i < medida; i++) {
             for (int j = 0; j < medida; j++) {
                 if(this.board.cells[i][j].isHint()){
-                    this.board.cells[i][j] = Cell.empty();
+                    this.board.cells[i][j].setEmpty();
+                } else if(this.board.cells[i][j].isNewBlack() && this.state == State.BLACK) {
+                    this.board.cells[i][j].setBlack();
+                } else if(this.board.cells[i][j].isNewWhite() && this.state == State.WHITE) {
+                    this.board.cells[i][j].setWhite();
                 }
                 if(canPlayPosition(this.state, new Position(i, j))){
-                    this.board.cells[i][j] = Cell.hint();
+                    this.board.cells[i][j].setHint();
                 }
             }
         }
@@ -129,7 +182,7 @@ public class Juego extends AppCompatActivity {
                 }
             }
         }
-        tv5.append("(" + String.valueOf(pos.getRow()) + "," + String.valueOf(pos.getColumn()) + ") " + String.valueOf(maxNumFichas) + "\n");
+        tv5.append("(" + String.valueOf(pos.getRow()) + "," + String.valueOf(pos.getColumn()) + ") " + String.valueOf(maxNumFichas) + " | ");
         this.board.setStartRoundValues(initial, initial_whites, initial_blacks);
         this.move(pos);
     }
@@ -226,20 +279,21 @@ public class Juego extends AppCompatActivity {
     }
 
     private void changeTurn() {
-        if (canPlay(getJugadorContrario())) {
-            this.state = getJugadorContrario();
-            tv3.setText(this.state.toString());
-        } else if (!canPlay(this.state)){
-            this.state = State.FINISHED;
+        if (this.state != State.FINISHED) {
+            if (canPlay(getJugadorContrario())) {
+                this.state = getJugadorContrario();
+                tv3.setText(this.state.toString());
+            } else if (!canPlay(this.state)) {
+                this.state = State.FINISHED;
+            }
         }
         if(this.state == State.WHITE) {
-            turnoCPU();
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
+            new Handler().postDelayed(new Runnable() {
                 public void run() {
+                    turnoCPU();
                     updateGrid();
                 }
-            }, 3000);
+            }, 1500);
         }
     }
 
