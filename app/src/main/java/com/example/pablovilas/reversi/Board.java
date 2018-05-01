@@ -20,10 +20,10 @@ public class Board {
     }
 
     Board(Board other) {
-        this.medida = medida;
-        this.cells = new Cell[medida][medida];
-        this.black = 0;
-        this.white = 0;
+        this.medida = other.medida;
+        this.cells = other.getCells();
+        this.black = other.black;
+        this.white = other.white;
     }
 
     private void initBoard() {

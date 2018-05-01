@@ -16,4 +16,6 @@
     <string name="e_mail_destinatario">E-mail destinatario</string>
     <string name="enviar_email">Enviar email</string>
     <string name="nueva_partida">Nueva partida</string>
+    <string name="undo">Undo</string>
+    <string name="redo">Redo</string>
 </resources>

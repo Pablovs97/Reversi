@@ -1,6 +1,8 @@
 package com.example.pablovilas.reversi;
 
-public class Cell {
+import java.io.Serializable;
+
+public class Cell implements Serializable{
 
     private static final char WHITE = 'w';
     private static final char BLACK = 'b';

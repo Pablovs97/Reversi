@@ -22,8 +22,15 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class Juego extends AppCompatActivity {
@@ -32,13 +39,16 @@ public class Juego extends AppCompatActivity {
     int tiempo;
     boolean control_tiempo;
     String alias;
-    private Board board;
+    Board board;
     public State state;
     GridView gv;
     ImageAdapter adapter;
     TextView tv1, tv2, tv3, tv5;
     TextView textTimer;
-    CountDownTimer cd;
+    private CountDownTimer cd;
+    long timeLeft;
+    List<Board> board_state;
+    int contador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +65,15 @@ public class Juego extends AppCompatActivity {
         medida = Integer.parseInt(intent.getStringExtra("Medida"));
         alias = intent.getStringExtra("Alias");
         tiempo = intent.getIntExtra("Tiempo", 0);
+        timeLeft = tiempo*1000;
         control_tiempo = intent.getBooleanExtra("Controlar", false);
 
         board = new Board(medida);
         state = State.BLACK;
 
+        board_state = new ArrayList<>();
         setHints();
+        board_state.add(new Board(board));
 
         textTimer = (TextView)findViewById(R.id.tv4);
         startTimer();
@@ -73,48 +86,65 @@ public class Juego extends AppCompatActivity {
         tv2.setText(String.valueOf(this.board.white));
     }
 
+    public void undo(View view){
+        if(state == State.WHITE){
+            Toast.makeText(this, "Espera tu turno", Toast.LENGTH_SHORT).show();
+        } else {
+            if (board_state.size() - contador - 1 > 0) {
+                contador++;
+                board = new Board(board_state.get(board_state.size() - contador - 1));
+                tv5.setText(String.valueOf(board_state.size()) + " " + String.valueOf(contador));
+                adapter = new ImageAdapter(this, board.cells, this);
+                gv.setAdapter(adapter);
+            } else {
+                Toast.makeText(this, "No puedes cargar el estado anterior", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void redo(View view){
+        if(state == State.WHITE){
+            Toast.makeText(this, "Espera tu turno", Toast.LENGTH_SHORT).show();
+        } else {
+            if (board_state.size() - contador < board_state.size()) {
+                contador--;
+                board = new Board(board_state.get(board_state.size() - contador - 1));
+                tv5.setText(String.valueOf(board_state.size()) + " " + String.valueOf(contador));
+                adapter = new ImageAdapter(this, board.cells, this);
+                gv.setAdapter(adapter);
+            } else {
+                Toast.makeText(this, "No puedes cargar el estado siguiente", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public void removeArrayFromIndex(int index){
+        List<Board> temp = new ArrayList<>();
+        for(int i = 0; i <= index; i++){
+            temp.add(board_state.get(i));
+            contador = 0;
+        }
+        board_state = temp;
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("Board", board.cells);
-        //outState.putString("Tiempo", this.textTimer.getText().toString());
-        outState.putInt("Tiempo", tiempo);
-        cd.cancel();
+        //outState.putSerializable("Board", board.cells);
+        outState.putLong("Tiempo", this.timeLeft);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null){
-            board.cells = (Cell[][]) savedInstanceState.getSerializable("Board");
-            adapter = new ImageAdapter(this, board.cells, this);
-            //textTimer.setText(savedInstanceState.getString("Tiempo"));
-            tiempo = (int) savedInstanceState.getInt("Tiempo");
-            cd.start();
-            gv.setAdapter(adapter);
+          //  board.cells = (Cell[][]) savedInstanceState.getSerializable("Board");
+          //  adapter = new ImageAdapter(this, board.cells, this);
+            timeLeft = (long) savedInstanceState.getLong("Tiempo");
+            startTimer();
+          //  gv.setAdapter(adapter);
         }
     }
 
-/*
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        cd.cancel();
-        outState.putString("Tiempo", this.textTimer.getText().toString());
-        outState.putSerializable("Board", this.board.getCells());
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        cd.start();
-        if (savedInstanceState != null){
-            board.setCells((Cell[][]) savedInstanceState.getSerializable("Board"));
-            textTimer.setText(savedInstanceState.getString("Tiempo"));
-            adapter = new ImageAdapter(this, board.cells, this);
-            gv.setAdapter(adapter);
-        }
-    }
-*/
     public void goToResults(){
         Intent intent = new Intent(this, Resultados.class);
         intent.putExtra("Log", "Alias: " + this.alias + "\nMedida parrilla: " + String.valueOf(this.medida) + "\nTiempo total");
@@ -123,12 +153,12 @@ public class Juego extends AppCompatActivity {
     }
 
     public void startTimer(){
-        cd = new CountDownTimer(tiempo * 1000, 1000) {
+        cd = new CountDownTimer(timeLeft, 1000) {
 
             public void onTick(long millisUntilFinished) {
-                String text = String.format("Time Remaining %02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) % 60, TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) % 60);
+                String text = String.format(Locale.getDefault(), "Time Remaining %02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) % 60, TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) % 60);
                 textTimer.setText(text);
-                tiempo--;
+                timeLeft = millisUntilFinished;
             }
 
             public void onFinish() {
@@ -143,6 +173,10 @@ public class Juego extends AppCompatActivity {
         setHints();
         adapter.notifyDataSetChanged();
         gv.setAdapter(adapter);
+        if(this.state == State.BLACK){
+            board_state.add(new Board(board));
+            tv5.setText(String.valueOf(board_state.size()) + " " + String.valueOf(contador));
+        }
     }
 
     public void setHints(){
@@ -182,7 +216,7 @@ public class Juego extends AppCompatActivity {
                 }
             }
         }
-        tv5.append("(" + String.valueOf(pos.getRow()) + "," + String.valueOf(pos.getColumn()) + ") " + String.valueOf(maxNumFichas) + " | ");
+        //tv5.append("(" + String.valueOf(pos.getRow()) + "," + String.valueOf(pos.getColumn()) + ") " + String.valueOf(maxNumFichas) + " | ");
         this.board.setStartRoundValues(initial, initial_whites, initial_blacks);
         this.move(pos);
     }

@@ -24,6 +24,9 @@ public class CellListener implements OnClickListener {
     public void onClick(View v) {
         if(cell.isHint() && juego.state==State.BLACK){
             juego.move(position);
+            if(juego.contador != 0){
+                juego.removeArrayFromIndex(juego.board_state.size() - juego.contador - 1);
+            }
             juego.updateGrid();
         } else if(juego.state == State.FINISHED) {
             Toast.makeText(context, "Se ha acabado el tiempo", Toast.LENGTH_SHORT).show();
