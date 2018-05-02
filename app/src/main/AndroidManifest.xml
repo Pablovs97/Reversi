@@ -11,7 +11,7 @@
         </activity>
         <activity android:name=".Configuracion" android:label="Configuración"/>
         <activity android:name=".Ayuda" android:label="Ayuda" />
-        <activity android:name=".Juego" />
+        <activity android:name=".Juego" android:theme="@style/Theme.AppCompat.NoActionBar" />
         <activity android:name=".Resultados" android:label="Resultados"/>
     </application>
 </manifest>

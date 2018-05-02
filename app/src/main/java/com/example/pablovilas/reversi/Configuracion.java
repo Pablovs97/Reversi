@@ -1,16 +1,13 @@
 package com.example.pablovilas.reversi;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class Configuracion extends AppCompatActivity {
 
@@ -19,7 +16,7 @@ public class Configuracion extends AppCompatActivity {
     private TextView value;
     private TextView time_tv;
     private CheckBox checkBox;
-    private int time = 30;
+    private int time = 300;
     private final int[] values = {4, 6, 8, 10, 12, 14, 16};
 
     @Override
@@ -54,7 +51,7 @@ public class Configuracion extends AppCompatActivity {
 
     public void comenzar(View view){
         Intent intent = new Intent(this, Juego.class);
-        intent.putExtra("Alias", alias.getText());
+        intent.putExtra("Alias", alias.getText().toString());
         intent.putExtra("Medida", value.getText());
         intent.putExtra("Tiempo", time);
         intent.putExtra("Controlar", checkBox.isChecked());

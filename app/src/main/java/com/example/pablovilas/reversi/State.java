@@ -1,5 +1,5 @@
 package com.example.pablovilas.reversi;
 
 public enum State {
-    BLACK, WHITE, FINISHED
+    BLACK_TURN, WHITE_TURN, FINISHED
 }

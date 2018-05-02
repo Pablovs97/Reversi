@@ -21,9 +21,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,10 +44,10 @@ public class Juego extends AppCompatActivity {
     public State state;
     GridView gv;
     ImageAdapter adapter;
-    TextView tv1, tv2, tv3, tv5;
+    TextView tv1, tv2, tv3, tv5, tv6;
     TextView textTimer;
-    private CountDownTimer cd;
-    long timeLeft;
+    private static CountDownTimer cd;
+    long timeLeft, initialTime;
     List<Board> board_state;
     int contador;
 
@@ -59,65 +60,81 @@ public class Juego extends AppCompatActivity {
         tv2 = (TextView) findViewById(R.id.tv2);
         tv3 = (TextView) findViewById(R.id.tv3);
         tv5 = (TextView) findViewById(R.id.tv5);
+        tv6 = (TextView) findViewById(R.id.tv6);
 
         Intent intent = getIntent();
 
         medida = Integer.parseInt(intent.getStringExtra("Medida"));
         alias = intent.getStringExtra("Alias");
         tiempo = intent.getIntExtra("Tiempo", 0);
-        timeLeft = tiempo*1000;
         control_tiempo = intent.getBooleanExtra("Controlar", false);
 
-        board = new Board(medida);
-        state = State.BLACK;
+        Log.d("Alias", alias);
+        Log.d("Control", String.valueOf(control_tiempo));
 
-        board_state = new ArrayList<>();
+        board = new Board(medida);
+        state = State.BLACK_TURN;
+
         setHints();
+        board_state = new ArrayList<>();
         board_state.add(new Board(board));
 
         textTimer = (TextView)findViewById(R.id.tv4);
-        startTimer();
 
         gv = (GridView) findViewById(R.id.gridView);
         gv.setNumColumns(medida);
         adapter = new ImageAdapter(this, board.cells, this);
         gv.setAdapter(adapter);
-        tv1.setText(String.valueOf(this.board.black));
-        tv2.setText(String.valueOf(this.board.white));
+        setNumFichas();
+
+        if(savedInstanceState != null) {
+            //timeLeft = 40000;
+            timeLeft = tiempo*1000 - (System.currentTimeMillis() - savedInstanceState.getLong("Tiempo"));
+            initialTime = savedInstanceState.getLong("Tiempo");
+            Log.d("Tiempo", String.valueOf(initialTime));
+        } else {
+            initialTime = System.currentTimeMillis();
+            timeLeft = tiempo*1000;
+        }
+
+        if(cd == null){
+            startTimer();
+        }
     }
 
     public void undo(View view){
-        if(state == State.WHITE){
+        // Sólo puede hacerse Undo cuando es el turno del jugador
+        if(state == State.WHITE_TURN){
             Toast.makeText(this, "Espera tu turno", Toast.LENGTH_SHORT).show();
-        } else {
+        } else if (state == State.BLACK_TURN) {
             if (board_state.size() - contador - 1 > 0) {
                 contador++;
                 board = new Board(board_state.get(board_state.size() - contador - 1));
-                tv5.setText(String.valueOf(board_state.size()) + " " + String.valueOf(contador));
                 adapter = new ImageAdapter(this, board.cells, this);
                 gv.setAdapter(adapter);
-            } else {
+            } else { // No podemos ir más para detrás.
                 Toast.makeText(this, "No puedes cargar el estado anterior", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
     public void redo(View view){
-        if(state == State.WHITE){
+        // Sólo puede hacerse Redo cuando es el turno del jugador
+        if(state == State.WHITE_TURN){
             Toast.makeText(this, "Espera tu turno", Toast.LENGTH_SHORT).show();
-        } else {
+        } else if (state == State.BLACK_TURN) {
             if (board_state.size() - contador < board_state.size()) {
                 contador--;
                 board = new Board(board_state.get(board_state.size() - contador - 1));
-                tv5.setText(String.valueOf(board_state.size()) + " " + String.valueOf(contador));
                 adapter = new ImageAdapter(this, board.cells, this);
                 gv.setAdapter(adapter);
-            } else {
+            } else { // No podemos ir más para delante.
                 Toast.makeText(this, "No puedes cargar el estado siguiente", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
+    // Tras hacer Undo, si realizamos una acción, todos los estados de la parrilla a partir de este estado son eliminados del Array.
     public void removeArrayFromIndex(int index){
         List<Board> temp = new ArrayList<>();
         for(int i = 0; i <= index; i++){
@@ -130,19 +147,39 @@ public class Juego extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //outState.putSerializable("Board", board.cells);
-        outState.putLong("Tiempo", this.timeLeft);
+        outState.putSerializable("Board", board.cells);
+        outState.putLong("Tiempo", this.initialTime);
+        outState.putInt("Blacks", this.board.black);
+        outState.putInt("Whites", this.board.white);
+        outState.putParcelableArrayList("UndoRedoList", (ArrayList<? extends Parcelable>) this.board_state);
+        outState.putInt("Contador", this.contador);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        cd.cancel();
+        cd = null;
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null){
-          //  board.cells = (Cell[][]) savedInstanceState.getSerializable("Board");
-          //  adapter = new ImageAdapter(this, board.cells, this);
-            timeLeft = (long) savedInstanceState.getLong("Tiempo");
-            startTimer();
-          //  gv.setAdapter(adapter);
+            board.cells = (Cell[][]) savedInstanceState.getSerializable("Board");
+            board.black = (int) savedInstanceState.getInt("Blacks");
+            board.white = (int) savedInstanceState.getInt("Whites");
+            setNumFichas();
+            adapter = new ImageAdapter(this, board.cells, this);
+            board_state = savedInstanceState.getParcelableArrayList("UndoRedoList");
+            contador = savedInstanceState.getInt("Contador");
+            gv.setAdapter(adapter);
         }
+    }
+
+    public void setNumFichas(){
+        tv1.setText(String.valueOf(this.board.black));
+        tv2.setText(String.valueOf(this.board.white));
+        tv6.setText(String.valueOf((this.medida*this.medida) - this.board.white - this.board.black));
     }
 
     public void goToResults(){
@@ -159,10 +196,14 @@ public class Juego extends AppCompatActivity {
                 String text = String.format(Locale.getDefault(), "Time Remaining %02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) % 60, TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) % 60);
                 textTimer.setText(text);
                 timeLeft = millisUntilFinished;
+                Log.d("asd", String.valueOf(timeLeft));
             }
 
             public void onFinish() {
+                cd.cancel();
                 textTimer.setText("Time's up!");
+                state = State.FINISHED;
+                tv5.setText("Fin - Tiempo acabado");
                 goToResults();
             }
 
@@ -173,9 +214,8 @@ public class Juego extends AppCompatActivity {
         setHints();
         adapter.notifyDataSetChanged();
         gv.setAdapter(adapter);
-        if(this.state == State.BLACK){
+        if(this.state == State.BLACK_TURN){
             board_state.add(new Board(board));
-            tv5.setText(String.valueOf(board_state.size()) + " " + String.valueOf(contador));
         }
     }
 
@@ -184,9 +224,9 @@ public class Juego extends AppCompatActivity {
             for (int j = 0; j < medida; j++) {
                 if(this.board.cells[i][j].isHint()){
                     this.board.cells[i][j].setEmpty();
-                } else if(this.board.cells[i][j].isNewBlack() && this.state == State.BLACK) {
+                } else if(this.board.cells[i][j].isNewBlack() && this.state == State.BLACK_TURN) {
                     this.board.cells[i][j].setBlack();
-                } else if(this.board.cells[i][j].isNewWhite() && this.state == State.WHITE) {
+                } else if(this.board.cells[i][j].isNewWhite() && this.state == State.WHITE_TURN) {
                     this.board.cells[i][j].setWhite();
                 }
                 if(canPlayPosition(this.state, new Position(i, j))){
@@ -226,15 +266,15 @@ public class Juego extends AppCompatActivity {
     }
 
     public boolean isSame(State player, Position position) {
-        return player.equals(State.BLACK) && this.board.isBlack(position) || player.equals(State.WHITE) && this.board.isWhite(position);
+        return player.equals(State.BLACK_TURN) && this.board.isBlack(position) || player.equals(State.WHITE_TURN) && this.board.isWhite(position);
     }
 
     public boolean isOther(State player, Position position) {
-        return player.equals(State.BLACK) && this.board.isWhite(position) || player.equals(State.WHITE) && this.board.isBlack(position);
+        return player.equals(State.BLACK_TURN) && this.board.isWhite(position) || player.equals(State.WHITE_TURN) && this.board.isBlack(position);
     }
 
     public boolean someSame(State player, Position position, Direction direction) {
-        return !(!this.board.contains(position) || (this.board.isEmpty(position))) && ((this.board.isBlack(position) && player.equals(State.BLACK)) || (this.board.isWhite(position) && player.equals(State.WHITE)) || someSame(player, position.move(direction), direction));
+        return !(!this.board.contains(position) || (this.board.isEmpty(position))) && ((this.board.isBlack(position) && player.equals(State.BLACK_TURN)) || (this.board.isWhite(position) && player.equals(State.WHITE_TURN)) || someSame(player, position.move(direction), direction));
     }
 
     public boolean isReverseDirection(State player, Position position, Direction direction) {
@@ -274,7 +314,7 @@ public class Juego extends AppCompatActivity {
     }
 
     private void disk(Position position) {
-        if (State.BLACK == this.state) {
+        if (State.BLACK_TURN == this.state) {
             this.board.setBlack(position);
         } else {
             this.board.setWhite(position);
@@ -283,7 +323,7 @@ public class Juego extends AppCompatActivity {
 
     private void reverse(Position position, Direction direction) {
         position = position.move(direction);
-        if (this.state == State.BLACK) {
+        if (this.state == State.BLACK_TURN) {
             reverseToBlack(position, direction);
         } else {
             reverseToWhite(position, direction);
@@ -319,9 +359,11 @@ public class Juego extends AppCompatActivity {
                 tv3.setText(this.state.toString());
             } else if (!canPlay(this.state)) {
                 this.state = State.FINISHED;
+                tv5.setText("Fin - Bloqueo");
+                cd.cancel();
             }
         }
-        if(this.state == State.WHITE) {
+        if(this.state == State.WHITE_TURN) {
             new Handler().postDelayed(new Runnable() {
                 public void run() {
                     turnoCPU();
@@ -332,10 +374,10 @@ public class Juego extends AppCompatActivity {
     }
 
     private State getJugadorContrario() {
-        if (this.state == State.BLACK) {
-            return State.WHITE;
+        if (this.state == State.BLACK_TURN) {
+            return State.WHITE_TURN;
         } else {
-            return State.BLACK;
+            return State.BLACK_TURN;
         }
     }
 
@@ -350,8 +392,20 @@ public class Juego extends AppCompatActivity {
         this.disk(position);
         this.reverse(position, directions);
         this.changeTurn();
-        tv1.setText(String.valueOf(this.board.black));
-        tv2.setText(String.valueOf(this.board.white));
+        setNumFichas();
+        if(((this.medida*this.medida) - this.board.white - this.board.black) == 0){
+            this.state = State.FINISHED;
+            if(this.board.black > this.board.white){
+                tv5.setText("Fin - Black wins");
+                cd.cancel();
+            } else if(this.board.black < this.board.white){
+                tv5.setText("Fin - White wins");
+                cd.cancel();
+            } else if(this.board.black == this.board.white){
+                tv5.setText("Fin - Empate");
+                cd.cancel();
+            }
+        }
     }
 
     public int numFichas(Position position, int numWhites){

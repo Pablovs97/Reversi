@@ -1,9 +1,10 @@
 package com.example.pablovilas.reversi;
 
-import java.util.Arrays;
+import android.os.Parcel;
+import android.os.Parcelable;
 import java.util.StringTokenizer;
 
-public class Board {
+public class Board implements Parcelable {
 
     public Cell[][] cells;
     private int medida;
@@ -26,6 +27,25 @@ public class Board {
         this.white = other.white;
     }
 
+    protected Board(Parcel in) {
+        medida = in.readInt();
+        cells = (Cell[][]) in.readSerializable();
+        black = in.readInt();
+        white = in.readInt();
+    }
+
+    public static final Creator<Board> CREATOR = new Creator<Board>() {
+        @Override
+        public Board createFromParcel(Parcel in) {
+            return new Board(in);
+        }
+
+        @Override
+        public Board[] newArray(int size) {
+            return new Board[size];
+        }
+    };
+
     private void initBoard() {
         for (int i = 0; i < medida; i++) {
             for (int j = 0; j < medida; j++) {
@@ -42,6 +62,7 @@ public class Board {
         this.sumar(2, "White");
     }
 
+    // Devuelve una copia de la matriz de celdas.
     public Cell[][] getCells(){
         Cell[][] copy = new Cell[medida][medida];
         for (int i = 0; i < medida; i++) {
@@ -193,4 +214,16 @@ public class Board {
         }
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.medida);
+        dest.writeSerializable(this.cells);
+        dest.writeInt(this.black);
+        dest.writeInt(this.white);
+    }
 }

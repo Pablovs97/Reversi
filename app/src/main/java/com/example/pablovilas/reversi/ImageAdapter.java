@@ -59,17 +59,19 @@ public class ImageAdapter extends BaseAdapter implements Serializable{
             imageButton.setBackgroundResource(R.drawable.flip_w_to_b);
             AnimationDrawable ad = (AnimationDrawable) imageButton.getBackground();
             ad.start();
+            juego.board.cells[x][y] = Cell.black();
          } else if (this.board[x][y].isNewWhite()){
             imageButton.setBackgroundResource(R.drawable.flip_b_to_w);
             AnimationDrawable ad = (AnimationDrawable) imageButton.getBackground();
             ad.start();
+             juego.board.cells[x][y] = Cell.white();
          } else if (this.board[x][y].isWhite()){
             imageButton.setImageResource(R.drawable.cell_white);
         } else if (this.board[x][y].isBlack()){
             imageButton.setImageResource(R.drawable.cell_black);
-        } else if (this.board[x][y].isHint() && this.juego.state == State.BLACK){
+        } else if (this.board[x][y].isHint() && this.juego.state == State.BLACK_TURN){
             imageButton.setImageResource(R.drawable.cell_hint);
-        } else if (this.board[x][y].isEmpty() || this.juego.state == State.WHITE){
+        } else if (this.board[x][y].isEmpty() || this.juego.state == State.WHITE_TURN){
             imageButton.setImageResource(R.drawable.cell_background);
         }
 
