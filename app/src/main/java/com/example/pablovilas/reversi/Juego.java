@@ -87,20 +87,18 @@ public class Juego extends AppCompatActivity {
         gv.setAdapter(adapter);
         setNumFichas();
 
+        // Cuando giramos la pantalla o la actividad deja de estar en segundo plano, con el propósito de que el tiempo sea lo mas
+        // fiel posible, hacemos que este sea el tiempo total menos el tiempo actual en milisegundos menos el tiempo al inicio de la partida.
         if(savedInstanceState != null) {
-            //timeLeft = 40000;
             timeLeft = tiempo*1000 - (System.currentTimeMillis() - savedInstanceState.getLong("Tiempo"));
             initialTime = savedInstanceState.getLong("Tiempo");
-            Log.d("Tiempo", String.valueOf(initialTime));
+        // La primera vez, nos guardamos el tiempo inicial en milisegundos.
         } else {
             initialTime = System.currentTimeMillis();
             timeLeft = tiempo*1000;
         }
-
-        if(cd == null){
-            startTimer();
-        }
     }
+
 
     public void undo(View view){
         // Sólo puede hacerse Undo cuando es el turno del jugador
@@ -163,6 +161,14 @@ public class Juego extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if(cd == null){
+            startTimer();
+        }
+    }
+
+    @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null){
             board.cells = (Cell[][]) savedInstanceState.getSerializable("Board");
@@ -182,9 +188,10 @@ public class Juego extends AppCompatActivity {
         tv6.setText(String.valueOf((this.medida*this.medida) - this.board.white - this.board.black));
     }
 
-    public void goToResults(){
+    public void goToResults(String msg){
         Intent intent = new Intent(this, Resultados.class);
-        intent.putExtra("Log", "Alias: " + this.alias + "\nMedida parrilla: " + String.valueOf(this.medida) + "\nTiempo total");
+        intent.putExtra("Log",
+                msg + "Alias: " + this.alias + "\nMedida tablero: " + String.valueOf(this.medida) + "\nTiempo transcurrido: " + String.valueOf(tiempo - timeLeft/1000) + " s.");
         finish();
         startActivity(intent);
     }
@@ -201,10 +208,10 @@ public class Juego extends AppCompatActivity {
 
             public void onFinish() {
                 cd.cancel();
-                textTimer.setText("Time's up!");
+                textTimer.setText("00:00");
                 state = State.FINISHED;
-                tv5.setText("Fin - Tiempo acabado");
-                goToResults();
+                goToResults("¡TIEMPO AGOTADO! :O\nOs habéis quedado sin completar el tablero.\nTu: " + String.valueOf(board.black) + " casillas.\nOponente: " + String.valueOf(board.white) + " casillas.\n"
+                        + String.valueOf(Math.abs(board.black - board.white)) + " casillas de diferencia.\nHan quedado " + String.valueOf(medida*medida - (board.black + board.white)) + " casillas por cubrir.\n");
             }
 
         }.start();
@@ -256,7 +263,6 @@ public class Juego extends AppCompatActivity {
                 }
             }
         }
-        //tv5.append("(" + String.valueOf(pos.getRow()) + "," + String.valueOf(pos.getColumn()) + ") " + String.valueOf(maxNumFichas) + " | ");
         this.board.setStartRoundValues(initial, initial_whites, initial_blacks);
         this.move(pos);
     }
@@ -359,8 +365,11 @@ public class Juego extends AppCompatActivity {
                 tv3.setText(this.state.toString());
             } else if (!canPlay(this.state)) {
                 this.state = State.FINISHED;
-                tv5.setText("Fin - Bloqueo");
-                cd.cancel();
+                if((medida*medida - (board.black + board.white)) > 0){
+                    goToResults("¡BLOQUEO! :S\nOs habéis quedado sin completar el tablero.\nTu: " + String.valueOf(board.black) + " casillas.\nOponente: " + String.valueOf(board.white) + " casillas.\n"
+                            + String.valueOf(Math.abs(board.black - board.white)) + " casillas de diferencia.\nHan quedado " + String.valueOf(medida*medida - (board.black + board.white)) + " casillas por cubrir.\n");
+                    cd.cancel();
+                }
             }
         }
         if(this.state == State.WHITE_TURN) {
@@ -396,13 +405,15 @@ public class Juego extends AppCompatActivity {
         if(((this.medida*this.medida) - this.board.white - this.board.black) == 0){
             this.state = State.FINISHED;
             if(this.board.black > this.board.white){
-                tv5.setText("Fin - Black wins");
+                goToResults("¡HAS GANADO! :D\nTu: " + String.valueOf(board.black) + " casillas.\nOponente: " + String.valueOf(board.white) + " casillas.\n"
+                + String.valueOf(board.black - board.white) + " casillas de diferencia.\n");
                 cd.cancel();
             } else if(this.board.black < this.board.white){
-                tv5.setText("Fin - White wins");
+                goToResults("¡HAS PERDIDO! :C\nOponente: " + String.valueOf(board.white) + " casillas.\nTu: " + String.valueOf(board.black) + " casillas.\n"
+                        + String.valueOf(board.white - board.black) + " casillas de diferencia.\n");
                 cd.cancel();
             } else if(this.board.black == this.board.white){
-                tv5.setText("Fin - Empate");
+                goToResults("¡HABÉIS EMPATADO! :|\n");
                 cd.cancel();
             }
         }
@@ -418,7 +429,7 @@ public class Juego extends AppCompatActivity {
         }
         this.disk(position);
         this.reverse(position, directions);
-        return this.board.white - numWhites;
+        return this.board.white - numWhites - 1;
     }
 
 }

@@ -165,19 +165,6 @@ public class Board implements Parcelable {
         }
     }
 
-    public String toString() {
-        StringBuilder sb = new StringBuilder(64);
-        for (int i = 0; i < this.cells.length; i++) {
-            for (int j = 0; j < this.cells[i].length; j++) {
-                sb.append(cells[i][j].toString());
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-
-
-    //Metodes Auxiliars
     private boolean isValidEmpy(Position position) {
         return this.contains(position) && this.isEmpty(position);
     }

@@ -51,7 +51,11 @@ public class Configuracion extends AppCompatActivity {
 
     public void comenzar(View view){
         Intent intent = new Intent(this, Juego.class);
-        intent.putExtra("Alias", alias.getText().toString());
+        if(alias.getText().toString().isEmpty()){
+            intent.putExtra("Alias", "Jugador 1");
+        } else {
+            intent.putExtra("Alias", alias.getText().toString());
+        }
         intent.putExtra("Medida", value.getText());
         intent.putExtra("Tiempo", time);
         intent.putExtra("Controlar", checkBox.isChecked());

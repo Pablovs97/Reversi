@@ -38,4 +38,12 @@ public class Resultados extends AppCompatActivity{
         in.putExtra(Intent.EXTRA_TEXT, log.getText().toString());
         startActivity(in);
     }
+
+    public void nuevaPartida(View view){
+        finish();
+    }
+
+    public void salir(View view){
+        finishAffinity();
+    }
 }
