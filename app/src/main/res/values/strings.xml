@@ -1,21 +1,58 @@
 <resources>
     <string name="app_name">Reversi</string>
+
+    <!-- Menu principal -->
     <string name="salir">Salir</string>
+    <string name="menu_principal">Menu Principal</string>
     <string name="comenzar_partida">Comenzar Partida</string>
     <string name="ayuda">Ayuda</string>
-    <string name="descripcion_juego">El Juego El juego se inicia con cuatro fichas posicionadas en el centro del tablero en forma de un cuadrado, dos mostrando el lado blanco hacia arriba y dos el lado negro. El primer movimiento lo realiza el jugador con las fichas negras. Colocando fichas Para que un jugador pueda colocar una ficha en una casilla del tablero, es necesario que haya por lo menos una línea recta (horizontal, vertical o diagonal) sin espacios vacíos entre la posición que el jugador desea y otra ficha de su color, y que haya una o más fichas del oponente entre ellas. Quando un jugador haga una jugada válida, todas las fichas del oponente que estén en una línea recta (horizontal, vertical o diagonal) con la pieza recién colocada y entre la pieza recién colocada y otra pieza del jugador que hizo el movimiento, serán giradas y pasan a ser del color de ese jugador. Fin de la Partida El juego termina cuando ninguno de los jugadores pueda hacer movimientos (por ejemplo, cuando todas las casas estén ocupadas o todas las fichas del tablero estén con el mismo color girado hacia arriba). Vence el jugador que posea más fichas que el adversario. Si ambos jugadores tienen la misma cantidad de fichas, el juego termina en empate.</string>
+
+    <!-- Ayuda -->
     <string name="volver">Volver</string>
+    <string name="ayuda1">El Juego</string>
+    <string name="ayuda2">El juego se inicia con cuatro fichas posicionadas en el centro del tablero en forma de un cuadrado, dos mostrando el lado blanco hacia arriba y dos el lado negro. El primer movimiento lo realiza el jugador con las fichas negras.</string>
+    <string name="ayuda3">Colocando fichas</string>
+    <string name="ayuda4">Para que un jugador pueda colocar una ficha en una casilla del tablero, es necesario que haya por lo menos una línea recta (horizontal, vertical o diagonal) sin espacios vacíos entre la posición que el jugador desea y otra ficha de su color, y que haya una o más fichas del oponente entre ellas. Cuando un jugador haga una jugada válida, todas las fichas del oponente que estén en una línea recta (horizontal, vertical o diagonal) con la ficha recién colocada y entre la ficha recién colocada y otra ficha del jugador que hizo el movimiento, serán giradas y pasan a ser del color de ese jugador.</string>
+    <string name="ayuda5">Fin de la partida</string>
+    <string name="ayuda6">El juego termina cuando ninguno de los jugadores pueda hacer movimientos (por ejemplo, cuando todas las casillas estén ocupadas o todas las fichas del tablero estén con el mismo color girado hacia arriba).\n  - Vence el jugador que posea más fichas que el adversario.\n  - Si ambos jugadores tienen la misma cantidad de fichas, el juego termina en empate.\n  - Si hay control del tiempo, y este se acaba, no gana nadie.\n  - Si se produce una situación de bloqueo, tampoco gana nadie.</string>
+
+    <!-- Configuración -->
     <string name="alias">Alias</string>
     <string name="medida_de_la_parrilla">Medida de la parrilla</string>
-    <string name="default_medida">4</string>
+    <string name="default_medida">8</string>
     <string name="control_del_tiempo">Control del tiempo</string>
     <string name="tiempo_segundos">(%s segundos)</string>
     <string name="comenzar">Comenzar</string>
+    <string name="dificultad_prompt">Selecciona la dificultad</string>
+    <string name="dificultad">Dificultad de la CPU</string>
+
+    <!-- Resultados -->
     <string name="dia_y_hora">Dia y hora</string>
     <string name="valores_del_log">Valores del log</string>
     <string name="e_mail_destinatario">E-mail destinatario</string>
     <string name="enviar_email">Enviar email</string>
     <string name="nueva_partida">Nueva partida</string>
+    <string name="example_mail">example@gmail.com</string>
+
+    <!-- Juego -->
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
+    <string name="rival">RIVAL</string>
+    <string name="tu">TU</string>
+    <string name="casillas_vacias">Quedan %s casillas vacías</string>
+    <string name="tu_turno">Tu turno</string>
+    <string name="turno_rival">Turno rival</string>
+    <string name="jugador1">Jugador1</string>
+    <string name="has_ganado_solo">¡HAS GANADO! :D</string>
+    <string name="has_ganado">¡HAS GANADO! :D\nTu: %s casillas.\nOponente: %s casillas.\n%s casillas de diferencia.\n</string>
+    <string name="has_perdido_solo">¡HAS PERDIDO! :C</string>
+    <string name="has_perdido">¡HAS PERDIDO! :C\nOponente: %s casillas.\nTu: %s casillas.\n%s casillas de diferencia.\n</string>
+    <string name="habeis_empatado">¡HABÉIS EMPATADO! :|</string>
+    <string name="bloqueo_solo">¡BLOQUEO! :S</string>
+    <string name="bloqueo">¡BLOQUEO! :S\nOs habéis quedado sin completar el tablero.\nTu: %s casillas.\nOponente: %s casillas.\n%s casillas de diferencia.\nHan quedado %s casillas por cubrir.\n</string>
+    <string name="tiempo_agotado_solo">¡TIEMPO AGOTADO! :O</string>
+    <string name="tiempo_agotado">¡TIEMPO AGOTADO! :O\nOs habéis quedado sin completar el tablero.\nTu: %s casillas.\nOponente: %s casillas.\n%s casillas de diferencia.\nHan quedado %s casillas por cubrir.\n</string>
+    <string name="Log">Alias: %s\nMedida tablero: %s\nTiempo transcurrido: %s s.</string>
+
+
 </resources>

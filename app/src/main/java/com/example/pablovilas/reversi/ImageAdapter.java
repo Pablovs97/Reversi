@@ -13,18 +13,18 @@ import java.io.Serializable;
 
 public class ImageAdapter extends BaseAdapter implements Serializable{
     private Context context;
-    private Cell[][] board;
+    private Cell[][] cells;
     Juego juego;
 
-    ImageAdapter(Context context, Cell[][] board, Juego juego) {
+    ImageAdapter(Context context, Cell[][] cells, Juego juego) {
         this.context = context;
-        this.board = board;
+        this.cells = cells;
         this.juego = juego;
     }
 
     @Override
     public int getCount() {
-        return board.length*board.length;
+        return cells.length* cells.length;
     }
 
     @Override
@@ -42,40 +42,41 @@ public class ImageAdapter extends BaseAdapter implements Serializable{
 
         ImageButton imageButton;
 
-        if (convertView == null) {
+        //if (convertView == null) {
             imageButton = new ImageButton(context);
-            imageButton.setLayoutParams(new GridView.LayoutParams(parent.getWidth() / board.length, parent.getWidth() / board.length));
-            imageButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            imageButton.setLayoutParams(new GridView.LayoutParams((parent.getWidth() - (parent.getPaddingEnd() + parent.getPaddingEnd())) / cells.length,
+                    (parent.getWidth() - (parent.getPaddingEnd() + parent.getPaddingEnd())) / cells.length));
+            //imageButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
             imageButton.setScaleType(ImageButton.ScaleType.FIT_XY);
             imageButton.setPadding(0, 0, 0, 0);
-        } else {
-            imageButton = (ImageButton) convertView;
-        }
+        //} else {
+        //    imageButton = (ImageButton) convertView;
+        //}
 
-        int x = position % this.board.length;
-        int y = position / this.board.length;
+        int x = position % this.cells.length;
+        int y = position / this.cells.length;
 
-         if (this.board[x][y].isNewBlack()){
+         if (this.cells[x][y].isNewBlack()){
             imageButton.setBackgroundResource(R.drawable.flip_w_to_b);
             AnimationDrawable ad = (AnimationDrawable) imageButton.getBackground();
             ad.start();
-            juego.board.cells[x][y] = Cell.black();
-         } else if (this.board[x][y].isNewWhite()){
+            juego.game.board.cells[x][y] = Cell.black();
+         } else if (this.cells[x][y].isNewWhite()){
             imageButton.setBackgroundResource(R.drawable.flip_b_to_w);
             AnimationDrawable ad = (AnimationDrawable) imageButton.getBackground();
             ad.start();
-             juego.board.cells[x][y] = Cell.white();
-         } else if (this.board[x][y].isWhite()){
+             juego.game.board.cells[x][y] = Cell.white();
+         } else if (this.cells[x][y].isWhite()){
             imageButton.setImageResource(R.drawable.cell_white);
-        } else if (this.board[x][y].isBlack()){
+        } else if (this.cells[x][y].isBlack()){
             imageButton.setImageResource(R.drawable.cell_black);
-        } else if (this.board[x][y].isHint() && this.juego.state == State.BLACK_TURN){
+        } else if (this.cells[x][y].isHint() && this.juego.game.state == State.BLACK_TURN){
             imageButton.setImageResource(R.drawable.cell_hint);
-        } else if (this.board[x][y].isEmpty() || this.juego.state == State.WHITE_TURN){
+        } else if (this.cells[x][y].isEmpty() || this.juego.game.state == State.WHITE_TURN){
             imageButton.setImageResource(R.drawable.cell_background);
         }
 
-        imageButton.setOnClickListener(new CellListener(context, new Position(x, y), this.board[x][y], juego));
+        imageButton.setOnClickListener(new CellListener(context, new Position(x, y), this.cells[x][y], juego));
 
         return imageButton;
     }

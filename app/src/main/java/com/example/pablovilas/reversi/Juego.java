@@ -1,37 +1,30 @@
 package com.example.pablovilas.reversi;
 /*
-LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.like_popup, (ViewGroup) activity.findViewById(R.id.like_popup_layout));
-        ImageView imageView = (ImageView) layout.findViewById(R.id.like_popup_iv);
-        imageView.setBackgroundResource(R.drawable.white_delete_icon);
 
-        Toast toast = new Toast(activity.getApplicationContext());
-        toast.setGravity(Gravity.BOTTOM, 0, 200);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.setView(layout);
-        toast.show();
 
-        <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" >
-  <solid android:color="#60000000" />
-    <corners android:radius="8dp" />
-</shape>
+
 */
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class Juego extends AppCompatActivity {
@@ -40,12 +33,11 @@ public class Juego extends AppCompatActivity {
     int tiempo;
     boolean control_tiempo;
     String alias;
-    Board board;
-    public State state;
+    String dificultad;
+    public Game game;
     GridView gv;
     ImageAdapter adapter;
-    TextView tv1, tv2, tv3, tv5, tv6;
-    TextView textTimer;
+    TextView numBlacks, numWhites, numEmpty, textTimer, turno;
     private static CountDownTimer cd;
     long timeLeft, initialTime;
     List<Board> board_state;
@@ -56,11 +48,13 @@ public class Juego extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.juego);
 
-        tv1 = (TextView) findViewById(R.id.tv1);
-        tv2 = (TextView) findViewById(R.id.tv2);
-        tv3 = (TextView) findViewById(R.id.tv3);
-        tv5 = (TextView) findViewById(R.id.tv5);
-        tv6 = (TextView) findViewById(R.id.tv6);
+        getSupportActionBar().hide();
+
+        numBlacks = (TextView) findViewById(R.id.num_blacks);
+        numWhites = (TextView) findViewById(R.id.num_whites);
+        numEmpty = (TextView) findViewById(R.id.num_empty);
+        textTimer = (TextView) findViewById(R.id.time_min_sec);
+        turno = (TextView) findViewById(R.id.turno);
 
         Intent intent = getIntent();
 
@@ -68,48 +62,58 @@ public class Juego extends AppCompatActivity {
         alias = intent.getStringExtra("Alias");
         tiempo = intent.getIntExtra("Tiempo", 0);
         control_tiempo = intent.getBooleanExtra("Controlar", false);
+        dificultad = intent.getStringExtra("Dificultad");
 
-        Log.d("Alias", alias);
-        Log.d("Control", String.valueOf(control_tiempo));
+        TextView cpu_level = (TextView) findViewById(R.id.cpu_level);
+        cpu_level.setText(dificultad);
 
-        board = new Board(medida);
-        state = State.BLACK_TURN;
+        TextView player_alias = (TextView) findViewById(R.id.player_alias);
+        player_alias.setText(alias);
 
-        setHints();
+        if(control_tiempo) textTimer.setTextColor(getResources().getColor(R.color.red));
+
+        game = new Game(new Board(medida));
+
         board_state = new ArrayList<>();
-        board_state.add(new Board(board));
-
-        textTimer = (TextView)findViewById(R.id.tv4);
+        board_state.add(new Board(game.board));
 
         gv = (GridView) findViewById(R.id.gridView);
         gv.setNumColumns(medida);
-        adapter = new ImageAdapter(this, board.cells, this);
+        adapter = new ImageAdapter(getApplicationContext(), game.board.cells, this);
         gv.setAdapter(adapter);
         setNumFichas();
 
         // Cuando giramos la pantalla o la actividad deja de estar en segundo plano, con el propósito de que el tiempo sea lo mas
         // fiel posible, hacemos que este sea el tiempo total menos el tiempo actual en milisegundos menos el tiempo al inicio de la partida.
         if(savedInstanceState != null) {
-            timeLeft = tiempo*1000 - (System.currentTimeMillis() - savedInstanceState.getLong("Tiempo"));
+            if(control_tiempo){
+                timeLeft = tiempo*1000 - (System.currentTimeMillis() - savedInstanceState.getLong("Tiempo"));
+            } else {
+                timeLeft = System.currentTimeMillis() - savedInstanceState.getLong("Tiempo");
+            }
             initialTime = savedInstanceState.getLong("Tiempo");
-        // La primera vez, nos guardamos el tiempo inicial en milisegundos.
+            // La primera vez, nos guardamos el tiempo inicial en milisegundos.
         } else {
+            if(control_tiempo){
+                timeLeft = tiempo*1000;
+            } else {
+                timeLeft = 0;
+            }
             initialTime = System.currentTimeMillis();
-            timeLeft = tiempo*1000;
         }
     }
 
-
     public void undo(View view){
         // Sólo puede hacerse Undo cuando es el turno del jugador
-        if(state == State.WHITE_TURN){
+        if(getState() == State.WHITE_TURN){
             Toast.makeText(this, "Espera tu turno", Toast.LENGTH_SHORT).show();
-        } else if (state == State.BLACK_TURN) {
+        } else if (getState() == State.BLACK_TURN) {
             if (board_state.size() - contador - 1 > 0) {
                 contador++;
-                board = new Board(board_state.get(board_state.size() - contador - 1));
-                adapter = new ImageAdapter(this, board.cells, this);
+                game.board = new Board(board_state.get(board_state.size() - contador - 1));
+                adapter = new ImageAdapter(this, game.board.cells, this);
                 gv.setAdapter(adapter);
+                setNumFichas();
             } else { // No podemos ir más para detrás.
                 Toast.makeText(this, "No puedes cargar el estado anterior", Toast.LENGTH_SHORT).show();
             }
@@ -118,14 +122,15 @@ public class Juego extends AppCompatActivity {
 
     public void redo(View view){
         // Sólo puede hacerse Redo cuando es el turno del jugador
-        if(state == State.WHITE_TURN){
+        if(getState() == State.WHITE_TURN){
             Toast.makeText(this, "Espera tu turno", Toast.LENGTH_SHORT).show();
-        } else if (state == State.BLACK_TURN) {
+        } else if (getState() == State.BLACK_TURN) {
             if (board_state.size() - contador < board_state.size()) {
                 contador--;
-                board = new Board(board_state.get(board_state.size() - contador - 1));
-                adapter = new ImageAdapter(this, board.cells, this);
+                game.board = new Board(board_state.get(board_state.size() - contador - 1));
+                adapter = new ImageAdapter(this, game.board.cells, this);
                 gv.setAdapter(adapter);
+                setNumFichas();
             } else { // No podemos ir más para delante.
                 Toast.makeText(this, "No puedes cargar el estado siguiente", Toast.LENGTH_SHORT).show();
             }
@@ -145,10 +150,14 @@ public class Juego extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("Board", board.cells);
+        // Board
+        outState.putSerializable("Board", game.board.cells);
+        // Time left
         outState.putLong("Tiempo", this.initialTime);
-        outState.putInt("Blacks", this.board.black);
-        outState.putInt("Whites", this.board.white);
+        // Num whites y blacks
+        outState.putInt("Blacks", this.game.board.black);
+        outState.putInt("Whites", this.game.board.white);
+        // Undo/Redo list e index de esta lista.
         outState.putParcelableArrayList("UndoRedoList", (ArrayList<? extends Parcelable>) this.board_state);
         outState.putInt("Contador", this.contador);
     }
@@ -156,6 +165,7 @@ public class Juego extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        // Paramos el contador.
         cd.cancel();
         cd = null;
     }
@@ -163,273 +173,260 @@ public class Juego extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        // Iniciamos el contador, hacía arriba o hacía abajo dependiendo de si hay o no control de tiempo.
         if(cd == null){
-            startTimer();
+            if(control_tiempo){
+                startDownTimer();
+            } else {
+                startUpTimer();
+            }
         }
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         if (savedInstanceState != null){
-            board.cells = (Cell[][]) savedInstanceState.getSerializable("Board");
-            board.black = (int) savedInstanceState.getInt("Blacks");
-            board.white = (int) savedInstanceState.getInt("Whites");
+            game.board.cells = (Cell[][]) savedInstanceState.getSerializable("Board");
+            game.board.black = savedInstanceState.getInt("Blacks");
+            game.board.white = savedInstanceState.getInt("Whites");
             setNumFichas();
-            adapter = new ImageAdapter(this, board.cells, this);
+            adapter = new ImageAdapter(this, game.board.cells, this);
             board_state = savedInstanceState.getParcelableArrayList("UndoRedoList");
             contador = savedInstanceState.getInt("Contador");
             gv.setAdapter(adapter);
         }
     }
 
+    // Actualiza en todos los textView el número de fichas blancas, negras, vacías y el turno.
     public void setNumFichas(){
-        tv1.setText(String.valueOf(this.board.black));
-        tv2.setText(String.valueOf(this.board.white));
-        tv6.setText(String.valueOf((this.medida*this.medida) - this.board.white - this.board.black));
+        numBlacks.setText(String.valueOf(game.board.black));
+        numWhites.setText(String.valueOf(game.board.white));
+        numEmpty.setText(String.format(getString(R.string.casillas_vacias), String.valueOf((this.medida*this.medida) - game.board.white - game.board.black)));
+        if(game.state == State.BLACK_TURN){
+            turno.setText(R.string.tu_turno);
+        } else if(game.state == State.WHITE_TURN){
+            turno.setText(R.string.turno_rival);
+        }
     }
 
     public void goToResults(String msg){
-        Intent intent = new Intent(this, Resultados.class);
-        intent.putExtra("Log",
-                msg + "Alias: " + this.alias + "\nMedida tablero: " + String.valueOf(this.medida) + "\nTiempo transcurrido: " + String.valueOf(tiempo - timeLeft/1000) + " s.");
-        finish();
-        startActivity(intent);
+        final Intent intent = new Intent(this, Resultados.class);
+        intent.putExtra("Log", msg + String.format(getString(R.string.Log), this.alias, String.valueOf(this.medida), String.valueOf(tiempo - timeLeft/1000)));
+        new Handler().postDelayed(new Runnable() {
+            public void run() {
+                finish();
+                startActivity(intent);
+            }
+        }, 1000);
     }
 
-    public void startTimer(){
+    // Cuando el jugador indica que quiere control de tiempo, el tiempo va hacia abajo, cuando se termina, acaba la partida.
+    public void startDownTimer(){
         cd = new CountDownTimer(timeLeft, 1000) {
 
             public void onTick(long millisUntilFinished) {
-                String text = String.format(Locale.getDefault(), "Time Remaining %02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) % 60, TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) % 60);
+                String text = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished) % 60, TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) % 60);
                 textTimer.setText(text);
                 timeLeft = millisUntilFinished;
-                Log.d("asd", String.valueOf(timeLeft));
             }
 
             public void onFinish() {
                 cd.cancel();
-                textTimer.setText("00:00");
-                state = State.FINISHED;
-                goToResults("¡TIEMPO AGOTADO! :O\nOs habéis quedado sin completar el tablero.\nTu: " + String.valueOf(board.black) + " casillas.\nOponente: " + String.valueOf(board.white) + " casillas.\n"
-                        + String.valueOf(Math.abs(board.black - board.white)) + " casillas de diferencia.\nHan quedado " + String.valueOf(medida*medida - (board.black + board.white)) + " casillas por cubrir.\n");
+                game.state = State.FINISHED;
+                showToast(R.drawable.shape_toast_red, R.drawable.tiempo_acabado, getString(R.string.tiempo_agotado_solo));
+                goToResults(String.format(getString(R.string.tiempo_agotado), String.valueOf(game.board.black), String.valueOf(game.board.white), String.valueOf(Math.abs(game.board.black - game.board.white)), String.valueOf(medida*medida - (game.board.black + game.board.white))));
             }
 
         }.start();
     }
 
+    // Cuando el jugador no activa el control de tiempo, el tiempo va hacia arriba
+    public void startUpTimer(){
+        cd = new CountDownTimer(Long.MAX_VALUE, 1000) {
+
+            public void onTick(long millisUntilFinished) {
+                String text = String.format(Locale.getDefault(), "%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(timeLeft) % 60, TimeUnit.MILLISECONDS.toSeconds(timeLeft) % 60);
+                timeLeft+=1000;
+                textTimer.setText(text);
+            }
+
+            public void onFinish() {}
+
+        }.start();
+    }
+
+    // Actualizamos todos los textViews y el grid.
     public void updateGrid(){
-        setHints();
+        setNumFichas();
+        game.setHints();
         adapter.notifyDataSetChanged();
         gv.setAdapter(adapter);
-        if(this.state == State.BLACK_TURN){
-            board_state.add(new Board(board));
+        if(getState() == State.BLACK_TURN){
+            board_state.add(new Board(game.board));
         }
     }
 
-    public void setHints(){
+    // Dependiendo de la dificultad seleccionada por el usuario elegiremos una u otra estrategia
+    public void turnoCPU(){
+        switch (dificultad) {
+            case "Fácil":
+                turnoCPUFacil();
+                break;
+            case "Normal":
+                turnoCPUNormal();
+                break;
+            case "Difícil":
+                turnoCPUDificil();
+                break;
+        }
+    }
+
+    // Miramos para cada uno de los hint el número de fichas que gira, y nos movemos a uno de los
+    // que menos fichas a girado.
+    public void turnoCPUFacil(){
+        game.setHints();
+        final Cell[][] initial = game.board.getCells();
+        int initial_whites = game.board.white;
+        int initial_blacks = game.board.black;
+        int minNumFichas = Integer.MAX_VALUE;
+        List<Position> worst_moves = new ArrayList<>();
+
         for (int i = 0; i < medida; i++) {
             for (int j = 0; j < medida; j++) {
-                if(this.board.cells[i][j].isHint()){
-                    this.board.cells[i][j].setEmpty();
-                } else if(this.board.cells[i][j].isNewBlack() && this.state == State.BLACK_TURN) {
-                    this.board.cells[i][j].setBlack();
-                } else if(this.board.cells[i][j].isNewWhite() && this.state == State.WHITE_TURN) {
-                    this.board.cells[i][j].setWhite();
-                }
-                if(canPlayPosition(this.state, new Position(i, j))){
-                    this.board.cells[i][j].setHint();
+                if (game.board.getCells()[i][j].isHint()) {
+                    int numFichas = game.numFichas(new Position(i, j), initial_whites);
+                    if(numFichas == minNumFichas){
+                        worst_moves.add(new Position(i, j));
+                    }
+                    if(numFichas < minNumFichas){
+                        minNumFichas = numFichas;
+                        worst_moves = new ArrayList<>();
+                        worst_moves.add(new Position(i, j));
+                    }
+                    game.board.setStartRoundValues(initial, initial_whites, initial_blacks);
                 }
             }
         }
+        game.board.setStartRoundValues(initial, initial_whites, initial_blacks);
+        game.move(worst_moves.get(new Random().nextInt(worst_moves.size())));
+        changeTurn();
     }
 
-    public void turnoCPU(){
-        setHints();
-        final Cell[][] initial = this.board.getCells();
-        int initial_whites = this.board.white;
-        int initial_blacks = this.board.black;
-        int maxNumFichas = 0;
-        Position pos = new Position(0,0);
+    public void turnoCPUNormal(){
+        game.setHints();
+        List<Position> moves = new ArrayList<>();
 
         for (int i = 0; i < medida; i++) {
             for (int j = 0; j < medida; j++) {
-                if (this.board.getCells()[i][j].isHint()) {
-                    int numFichas = this.numFichas(new Position(i, j), initial_whites);
+                if (game.board.getCells()[i][j].isHint()) {
+                    moves.add(new Position(i, j));
+                }
+            }
+        }
+        game.move(moves.get(new Random().nextInt(moves.size())));
+        changeTurn();
+    }
+
+    // Miramos para cada uno de los hint el número de fichas que gira, y nos movemos a uno de los
+    // que más fichas a girado.
+    public void turnoCPUDificil(){
+        game.setHints();
+        final Cell[][] initial = game.board.getCells();
+        int initial_whites = game.board.white;
+        int initial_blacks = game.board.black;
+        int maxNumFichas = 0;
+        List<Position> best_moves = new ArrayList<>();
+
+        for (int i = 0; i < medida; i++) {
+            for (int j = 0; j < medida; j++) {
+                if (game.board.getCells()[i][j].isHint()) {
+                    int numFichas = game.numFichas(new Position(i, j), initial_whites);
+                    if(numFichas == maxNumFichas){
+                        best_moves.add(new Position(i, j));
+                    }
                     if(numFichas > maxNumFichas){
                         maxNumFichas = numFichas;
-                        pos = new Position(i, j);
+                        best_moves = new ArrayList<>();
+                        best_moves.add(new Position(i, j));
                     }
-                    this.board.setStartRoundValues(initial, initial_whites, initial_blacks);
+                    game.board.setStartRoundValues(initial, initial_whites, initial_blacks);
                 }
             }
         }
-        this.board.setStartRoundValues(initial, initial_whites, initial_blacks);
-        this.move(pos);
+        game.board.setStartRoundValues(initial, initial_whites, initial_blacks);
+        game.move(best_moves.get(new Random().nextInt(best_moves.size())));
+        changeTurn();
     }
 
-    public boolean isFinished() {
-        return this.state.equals(State.FINISHED);
-    }
-
-    public boolean isSame(State player, Position position) {
-        return player.equals(State.BLACK_TURN) && this.board.isBlack(position) || player.equals(State.WHITE_TURN) && this.board.isWhite(position);
-    }
-
-    public boolean isOther(State player, Position position) {
-        return player.equals(State.BLACK_TURN) && this.board.isWhite(position) || player.equals(State.WHITE_TURN) && this.board.isBlack(position);
-    }
-
-    public boolean someSame(State player, Position position, Direction direction) {
-        return !(!this.board.contains(position) || (this.board.isEmpty(position))) && ((this.board.isBlack(position) && player.equals(State.BLACK_TURN)) || (this.board.isWhite(position) && player.equals(State.WHITE_TURN)) || someSame(player, position.move(direction), direction));
-    }
-
-    public boolean isReverseDirection(State player, Position position, Direction direction) {
-        return isOther(player, position.move(direction)) && someSame(player, position.move(direction), direction);
-    }
-
-    public boolean[] directionsOfReverse(State player, Position position) {
-        boolean[] result = new boolean[Direction.ALL.length];
-        for (int i = 0; i < Direction.ALL.length; i++) {
-            result[i] = isReverseDirection(player, position, Direction.ALL[i]);
-        }
-        return result;
-    }
-
-    private static boolean allFalse(boolean[] bools) {
-        for (boolean bool : bools) {
-            if (bool) {
-                return false;
+    // Llamará al método changeTurn de la clase Game, realizando la acción pertinente, dependiendo de a que estado se ha cambiado.
+    public void changeTurn(){
+        // Si el jugador ha hecho undo y realiza un movimiento, los datos almacenados a partir de aquí se borran.
+        if(getState() == State.BLACK_TURN){
+            if(contador != 0){
+                removeArrayFromIndex(board_state.size() - contador - 1);
             }
         }
-        return true;
-    }
 
-    public boolean canPlayPosition(State player, Position position) {
-        return this.board.isEmpty(position) && !allFalse(directionsOfReverse(player, position));
-    }
+        game.changeTurn();
+        updateGrid();
 
-    public boolean canPlay(State player) {
-        for (int i = 0; i < this.board.size(); i++) {
-            for (int j = 0; j < this.board.size(); j++) {
-                if (canPlayPosition(player, new Position(i, j))) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private void disk(Position position) {
-        if (State.BLACK_TURN == this.state) {
-            this.board.setBlack(position);
-        } else {
-            this.board.setWhite(position);
-        }
-    }
-
-    private void reverse(Position position, Direction direction) {
-        position = position.move(direction);
-        if (this.state == State.BLACK_TURN) {
-            reverseToBlack(position, direction);
-        } else {
-            reverseToWhite(position, direction);
-        }
-    }
-
-    private void reverseToWhite(Position position, Direction direction) {
-        while (this.board.isBlack(position)) {
-            this.board.reverse(position);
-            position = position.move(direction);
-        }
-    }
-
-    private void reverseToBlack(Position position, Direction direction) {
-        while (this.board.isWhite(position)) {
-            this.board.reverse(position);
-            position = position.move(direction);
-        }
-    }
-
-    private void reverse(Position position, boolean[] directions) {
-        for (int i = 0; i < Direction.ALL.length; i++) {
-            if (directions[i]) {
-                reverse(position, Direction.ALL[i]);
-            }
-        }
-    }
-
-    private void changeTurn() {
-        if (this.state != State.FINISHED) {
-            if (canPlay(getJugadorContrario())) {
-                this.state = getJugadorContrario();
-                tv3.setText(this.state.toString());
-            } else if (!canPlay(this.state)) {
-                this.state = State.FINISHED;
-                if((medida*medida - (board.black + board.white)) > 0){
-                    goToResults("¡BLOQUEO! :S\nOs habéis quedado sin completar el tablero.\nTu: " + String.valueOf(board.black) + " casillas.\nOponente: " + String.valueOf(board.white) + " casillas.\n"
-                            + String.valueOf(Math.abs(board.black - board.white)) + " casillas de diferencia.\nHan quedado " + String.valueOf(medida*medida - (board.black + board.white)) + " casillas por cubrir.\n");
-                    cd.cancel();
-                }
-            }
-        }
-        if(this.state == State.WHITE_TURN) {
+        // Si el estado es blanco, realizamos el turno de la CPU.
+        if(getState() == State.WHITE_TURN){
             new Handler().postDelayed(new Runnable() {
                 public void run() {
                     turnoCPU();
-                    updateGrid();
                 }
-            }, 1500);
-        }
-    }
+            }, 1000);
 
-    private State getJugadorContrario() {
-        if (this.state == State.BLACK_TURN) {
-            return State.WHITE_TURN;
-        } else {
-            return State.BLACK_TURN;
-        }
-    }
-
-    public void move(Position position) {
-        if (!this.board.isEmpty(position)) {
-            return;
-        }
-        boolean[] directions = this.directionsOfReverse(this.state, position);
-        if (allFalse(directions)) {
-            return;
-        }
-        this.disk(position);
-        this.reverse(position, directions);
-        this.changeTurn();
-        setNumFichas();
-        if(((this.medida*this.medida) - this.board.white - this.board.black) == 0){
-            this.state = State.FINISHED;
-            if(this.board.black > this.board.white){
-                goToResults("¡HAS GANADO! :D\nTu: " + String.valueOf(board.black) + " casillas.\nOponente: " + String.valueOf(board.white) + " casillas.\n"
-                + String.valueOf(board.black - board.white) + " casillas de diferencia.\n");
-                cd.cancel();
-            } else if(this.board.black < this.board.white){
-                goToResults("¡HAS PERDIDO! :C\nOponente: " + String.valueOf(board.white) + " casillas.\nTu: " + String.valueOf(board.black) + " casillas.\n"
-                        + String.valueOf(board.white - board.black) + " casillas de diferencia.\n");
-                cd.cancel();
-            } else if(this.board.black == this.board.white){
-                goToResults("¡HABÉIS EMPATADO! :|\n");
-                cd.cancel();
+        // Si el estado es Finished, ha habido bloqueo. Ningún jugador a podido tirar.
+        } else if(getState() == State.FINISHED){
+            if((medida*medida - (game.board.black + game.board.white)) > 0){
+                showToast(R.drawable.shape_toast_red, R.drawable.bloqueo, getString(R.string.bloqueo_solo));
+                goToResults(String.format(getString(R.string.bloqueo), String.valueOf(game.board.black), String.valueOf(game.board.white), String.valueOf(Math.abs(game.board.black - game.board.white)), String.valueOf(medida*medida - (game.board.black + game.board.white))));
             }
         }
+
+        // Tablero completado, miramos el motivo del fin de la partida.
+        if(((this.medida*this.medida) - game.board.white - game.board.black) == 0) {
+            game.state = State.FINISHED;
+            checkFinish();
+        }
     }
 
-    public int numFichas(Position position, int numWhites){
-        if (!this.board.isEmpty(position)) {
-            return -1;
+    private void checkFinish(){
+        if(game.board.black > game.board.white){
+            showToast(R.drawable.shape_toast_green, R.drawable.victoria, getString(R.string.has_ganado_solo));
+            goToResults(String.format(getString(R.string.has_ganado), String.valueOf(game.board.black), String.valueOf(game.board.white), String.valueOf(game.board.black - game.board.white)));
+        } else if(game.board.black < game.board.white){
+            showToast(R.drawable.shape_toast_red, R.drawable.derrota, getString(R.string.has_perdido_solo));
+            goToResults(String.format(getString(R.string.has_perdido), String.valueOf(game.board.white), String.valueOf(game.board.black), String.valueOf(game.board.white - game.board.black)));
+        } else if(game.board.black == game.board.white){
+            showToast(R.drawable.shape_toast_grey, R.drawable.empate, getString(R.string.habeis_empatado));
+            goToResults(getString(R.string.habeis_empatado));
         }
-        boolean[] directions = this.directionsOfReverse(this.state, position);
-        if (allFalse(directions)) {
-            return -1;
-        }
-        this.disk(position);
-        this.reverse(position, directions);
-        return this.board.white - numWhites - 1;
+    }
+
+    // Muestra el Toast personalizado, el cuál consta de un ImageView y un TextView.
+    public void showToast(int toast_shape, int image, String msg){
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.toast_layout, (ViewGroup) findViewById(R.id.toast));
+        layout.setBackgroundResource(toast_shape);
+
+        ImageView imageView = (ImageView) layout.findViewById(R.id.toast_iv);
+        imageView.setBackgroundResource(image);
+
+        TextView text = (TextView) layout.findViewById(R.id.toast_tv);
+        text.setText(msg);
+
+        Toast toast = new Toast(this);
+        toast.setGravity(Gravity.BOTTOM, 0, 50);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+    }
+
+    public State getState(){
+        return this.game.state;
     }
 
 }

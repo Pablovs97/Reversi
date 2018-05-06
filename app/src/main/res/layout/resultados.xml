@@ -3,7 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center">
+    android:gravity="center"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin">
 
     <TextView
         android:id="@+id/dia_hora_tv"
@@ -18,14 +22,14 @@
         android:id="@+id/dia_hora_et"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
+        android:textColor="@color/black"
         android:inputType="text" />
 
     <TextView
         android:id="@+id/log_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="@dimen/element_horizontal_margin"
         android:text="@string/valores_del_log"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -37,16 +41,16 @@
         android:layout_height="wrap_content"
         android:scrollbars="vertical"
         android:gravity="top|start"
-        android:lines="7"
+        android:maxLines="8"
         android:textSize="18sp"
-        android:layout_marginStart="10dp"
+        android:textColor="@color/black"
         android:inputType="textMultiLine" />
 
     <TextView
         android:id="@+id/email_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="@dimen/element_horizontal_margin"
         android:text="@string/e_mail_destinatario"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -56,25 +60,44 @@
         android:id="@+id/email_et"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:inputType="textEmailAddress" />
-    <Button
+        android:layout_marginBottom="@dimen/element_horizontal_margin"
+        android:hint="@string/example_mail"
+        android:inputType="textEmailAddress"
+        android:textColor="@color/black" />
+
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
-        android:text="@string/enviar_email"
-        android:onClick="sendMail"/>
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/element_horizontal_margin"
+            android:background="@drawable/shape_grid"
+            android:onClick="sendMail"
+            android:paddingEnd="@dimen/element_horizontal_margin"
+            android:paddingStart="@dimen/element_horizontal_margin"
+            android:text="@string/enviar_email"
+            android:textColor="@color/white" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shape_grid"
+            android:onClick="nuevaPartida"
+            android:paddingEnd="@dimen/element_horizontal_margin"
+            android:paddingStart="@dimen/element_horizontal_margin"
+            android:text="@string/nueva_partida"
+            android:textColor="@color/white" />
+    </LinearLayout>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nueva_partida"
-        android:onClick="nuevaPartida"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/element_horizontal_margin"
+        android:background="@drawable/shape_toast_grey"
+        android:onClick="salir"
         android:text="@string/salir"
-        android:onClick="salir"/>
-
+        android:textColor="@color/white" />
 </LinearLayout>

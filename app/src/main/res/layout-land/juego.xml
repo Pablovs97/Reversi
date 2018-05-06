@@ -3,7 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:weightSum="2">
+    android:weightSum="2"
+    android:paddingBottom="@dimen/activity_margin_noBar"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_margin_noBar">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,10 +17,17 @@
 
         <GridView
             android:id="@+id/gridView"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/element_horizontal_margin"
             android:adjustViewBounds="true"
+            android:background="@drawable/shape_grid"
+            android:gravity="center"
             android:horizontalSpacing="0dp"
+            android:paddingBottom="@dimen/element_horizontal_margin"
+            android:paddingEnd="@dimen/element_horizontal_margin"
+            android:paddingStart="@dimen/element_horizontal_margin"
+            android:paddingTop="@dimen/element_horizontal_margin"
             android:stretchMode="columnWidth" />
     </LinearLayout>
 
@@ -24,56 +35,202 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:gravity="center"
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/tv1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/tv2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/tv6"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/tv3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/tv4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/tv5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:id="@+id/turno"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:typeface="serif" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/element_horizontal_margin"
+            android:layout_marginTop="@dimen/element_horizontal_margin"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/element_horizontal_margin"
+                android:layout_weight="1"
+                android:background="@drawable/shape_grid">
+
+                <ImageView
+                    android:id="@+id/num_whites_iv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignBottom="@id/num_blacks"
+                    android:layout_alignEnd="@id/num_blacks"
+                    android:layout_alignStart="@id/num_blacks"
+                    android:layout_alignTop="@id/num_blacks"
+                    android:scaleType="fitEnd"
+                    android:src="@drawable/black_puntuation" />
+
+                <TextView
+                    android:id="@+id/num_blacks"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="@dimen/element_horizontal_margin"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/num_whites_iv">
+
+                    <TextView
+                        android:id="@+id/player_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/element_horizontal_margin"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="@string/tu"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:typeface="serif" />
+
+                    <TextView
+                        android:id="@+id/player_alias"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/player_name"
+                        android:layout_marginStart="@dimen/element_horizontal_margin"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:typeface="serif" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/shape_grid">
+
+                <ImageView
+                    android:id="@+id/num_blacks_iv"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignBottom="@id/num_whites"
+                    android:layout_alignEnd="@id/num_whites"
+                    android:layout_alignStart="@id/num_whites"
+                    android:layout_alignTop="@id/num_whites"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/white_puntuation" />
+
+                <TextView
+                    android:id="@+id/num_whites"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="@dimen/element_horizontal_margin"
+                    android:gravity="center"
+                    android:singleLine="true"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toEndOf="@+id/num_blacks_iv">
+
+                    <TextView
+                        android:id="@+id/cpu_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/element_horizontal_margin"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:text="@string/rival"
+                        android:textColor="@color/white"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/cpu_level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/cpu_name"
+                        android:layout_marginStart="@dimen/element_horizontal_margin"
+                        android:gravity="center"
+                        android:singleLine="true"
+                        android:textColor="@color/white"
+                        android:textSize="12sp" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/num_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:typeface="serif" />
+
+        <TextView
+            android:id="@+id/time_min_sec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/element_horizontal_margin"
+            android:layout_marginTop="@dimen/element_horizontal_margin"
+            android:textColor="@color/blue"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:typeface="serif" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/undo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/element_horizontal_margin"
+                android:background="@drawable/shape_grid"
                 android:onClick="undo"
-                android:text="@string/undo" />
+                android:text="@string/undo"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/redo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/element_horizontal_margin"
+                android:background="@drawable/shape_grid"
                 android:onClick="redo"
-                android:text="@string/redo" />
+                android:text="@string/redo"
+                android:textColor="@color/white"
+                android:textSize="12sp" />
         </LinearLayout>
 
     </LinearLayout>

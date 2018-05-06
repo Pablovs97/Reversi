@@ -12,6 +12,7 @@ public class Menu_Principal extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.menu_principal);
+        getSupportActionBar().setTitle(R.string.menu_principal);
     }
 
     public void muestraAyuda (View clickedButton) {

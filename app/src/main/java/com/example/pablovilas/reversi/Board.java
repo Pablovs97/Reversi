@@ -7,7 +7,7 @@ import java.util.StringTokenizer;
 public class Board implements Parcelable {
 
     public Cell[][] cells;
-    private int medida;
+    public int medida;
 
     public int black;
     public int white;
@@ -58,8 +58,8 @@ public class Board implements Parcelable {
         this.cells[medida/2][medida/2 - 1] = Cell.black();
         this.cells[medida/2][medida/2] = Cell.white();
 
-        this.sumar(2, "Black");
-        this.sumar(2, "White");
+        this.black = 2;
+        this.white = 2;
     }
 
     // Devuelve una copia de la matriz de celdas.
@@ -128,14 +128,14 @@ public class Board implements Parcelable {
     public void setWhite(Position position) {
         if (this.isValidEmpy(position)) {
             this.cells[position.getRow()][position.getColumn()].setWhite();
-            this.sumar(1, "White");
+            this.white++;
         }
     }
 
     public void setBlack(Position position) {
         if (this.isValidEmpy(position)) {
             this.cells[position.getRow()][position.getColumn()].setBlack();
-            this.sumar(1, "Black");
+            this.black++;
         }
     }
 
@@ -173,31 +173,15 @@ public class Board implements Parcelable {
         return this.contains(position) && !this.isEmpty(position);
     }
 
-    private void sumar(int i, String color) {
-        if (color.equals("Black")) {
-            this.black += i;
-        } else {
-            this.white += i;
-        }
-    }
-
-    private void restar(int i, String color) {
-        if (color.equals("Black")) {
-            this.black -= i;
-        } else {
-            this.white -= i;
-        }
-    }
-
     private void changeColors(Position position) {
         if (this.cells[position.getRow()][position.getColumn()].isBlack()) {
             this.cells[position.getRow()][position.getColumn()].setNewWhite();
-            this.restar(1, "Black");
-            this.sumar(1, "White");
+            this.black--;
+            this.white++;
         } else {
             this.cells[position.getRow()][position.getColumn()].setNewBlack();
-            this.sumar(1, "Black");
-            this.restar(1, "White");
+            this.black++;
+            this.white--;
         }
     }
 

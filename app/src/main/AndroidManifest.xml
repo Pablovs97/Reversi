@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.pablovilas.reversi">
 
-    <application android:icon="@mipmap/ic_launcher" android:label="@string/app_name" android:allowBackup="true" android:theme="@style/AppTheme">
-        <activity android:name=".Menu_Principal" android:label="Principal">
+    <application android:icon="@mipmap/icon_round" android:label="@string/app_name" android:allowBackup="true" android:theme="@style/AppTheme">
+        <activity android:name=".Menu_Principal" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -11,7 +11,7 @@
         </activity>
         <activity android:name=".Configuracion" android:label="Configuración"/>
         <activity android:name=".Ayuda" android:label="Ayuda" />
-        <activity android:name=".Juego" android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".Juego"/>
         <activity android:name=".Resultados" android:label="Resultados"/>
     </application>
 </manifest>
