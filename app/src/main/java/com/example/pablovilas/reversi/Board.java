@@ -145,26 +145,6 @@ public class Board implements Parcelable {
         }
     }
 
-    public void loadBoard(String str) {
-        StringTokenizer st = new StringTokenizer(str, "\n");
-        int row = 0;
-        this.white = 0;
-        this.black = 0;
-        while (st.hasMoreTokens()) {
-            String rowChars = st.nextToken();
-            for (int column = 0; column < this.cells[row].length; column++) {
-                Cell cell = Cell.cellFromChar(rowChars.charAt(column));
-                this.cells[row][column] = cell;
-                if (cell.isWhite()) {
-                    white += 1;
-                } else if (cell.isBlack()) {
-                    black += 1;
-                }
-            }
-            row += 1;
-        }
-    }
-
     private boolean isValidEmpy(Position position) {
         return this.contains(position) && this.isEmpty(position);
     }

@@ -56,7 +56,7 @@ public class Configuracion extends AppCompatActivity {
     public void comenzar(View view){
         Intent intent = new Intent(this, Juego.class);
         if(alias.getText().toString().isEmpty()){
-            intent.putExtra("Alias", "Jugador 1");
+            intent.putExtra("Alias", getString(R.string.jugador1));
         } else {
             intent.putExtra("Alias", alias.getText().toString());
         }

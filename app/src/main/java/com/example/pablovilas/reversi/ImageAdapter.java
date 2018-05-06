@@ -40,18 +40,11 @@ public class ImageAdapter extends BaseAdapter implements Serializable{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        ImageButton imageButton;
-
-        //if (convertView == null) {
-            imageButton = new ImageButton(context);
-            imageButton.setLayoutParams(new GridView.LayoutParams((parent.getWidth() - (parent.getPaddingEnd() + parent.getPaddingEnd())) / cells.length,
-                    (parent.getWidth() - (parent.getPaddingEnd() + parent.getPaddingEnd())) / cells.length));
-            //imageButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
-            imageButton.setScaleType(ImageButton.ScaleType.FIT_XY);
-            imageButton.setPadding(0, 0, 0, 0);
-        //} else {
-        //    imageButton = (ImageButton) convertView;
-        //}
+        ImageButton imageButton = new ImageButton(context);
+        imageButton.setLayoutParams(new GridView.LayoutParams((parent.getWidth() - (parent.getPaddingEnd() + parent.getPaddingEnd())) / cells.length,
+                (parent.getWidth() - (parent.getPaddingEnd() + parent.getPaddingEnd())) / cells.length));
+        imageButton.setScaleType(ImageButton.ScaleType.FIT_XY);
+        imageButton.setPadding(0, 0, 0, 0);
 
         int x = position % this.cells.length;
         int y = position / this.cells.length;

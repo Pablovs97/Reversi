@@ -29,19 +29,16 @@ import java.util.concurrent.TimeUnit;
 
 public class Juego extends AppCompatActivity {
 
-    int medida;
-    int tiempo;
+    TextView numBlacks, numWhites, numEmpty, textTimer, turno;
+    int medida, tiempo, contador;
     boolean control_tiempo;
-    String alias;
-    String dificultad;
+    String alias, dificultad;
     public Game game;
     GridView gv;
     ImageAdapter adapter;
-    TextView numBlacks, numWhites, numEmpty, textTimer, turno;
     private static CountDownTimer cd;
     long timeLeft, initialTime;
     List<Board> board_state;
-    int contador;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,27 +53,31 @@ public class Juego extends AppCompatActivity {
         textTimer = (TextView) findViewById(R.id.time_min_sec);
         turno = (TextView) findViewById(R.id.turno);
 
+        // Datos de la pantalla de configuración.
         Intent intent = getIntent();
-
         medida = Integer.parseInt(intent.getStringExtra("Medida"));
         alias = intent.getStringExtra("Alias");
         tiempo = intent.getIntExtra("Tiempo", 0);
         control_tiempo = intent.getBooleanExtra("Controlar", false);
         dificultad = intent.getStringExtra("Dificultad");
 
+        // CPU level y alias en pantalla.
         TextView cpu_level = (TextView) findViewById(R.id.cpu_level);
         cpu_level.setText(dificultad);
-
         TextView player_alias = (TextView) findViewById(R.id.player_alias);
         player_alias.setText(alias);
 
+        // Color rojo para el temporizador si hay control de tiempo.
         if(control_tiempo) textTimer.setTextColor(getResources().getColor(R.color.red));
 
+        // Nuevo juego.
         game = new Game(new Board(medida));
 
+        // Lista de boards para Undo/Redo
         board_state = new ArrayList<>();
         board_state.add(new Board(game.board));
 
+        // GridView -> Parrilla
         gv = (GridView) findViewById(R.id.gridView);
         gv.setNumColumns(medida);
         adapter = new ImageAdapter(getApplicationContext(), game.board.cells, this);
@@ -115,7 +116,7 @@ public class Juego extends AppCompatActivity {
                 gv.setAdapter(adapter);
                 setNumFichas();
             } else { // No podemos ir más para detrás.
-                Toast.makeText(this, "No puedes cargar el estado anterior", Toast.LENGTH_SHORT).show();
+                showToast(R.drawable.shape_toast_grey, R.drawable.invalid, getString(R.string.no_undo));
             }
         }
     }
@@ -132,7 +133,7 @@ public class Juego extends AppCompatActivity {
                 gv.setAdapter(adapter);
                 setNumFichas();
             } else { // No podemos ir más para delante.
-                Toast.makeText(this, "No puedes cargar el estado siguiente", Toast.LENGTH_SHORT).show();
+                showToast(R.drawable.shape_toast_grey, R.drawable.invalid, getString(R.string.no_redo));
             }
         }
     }

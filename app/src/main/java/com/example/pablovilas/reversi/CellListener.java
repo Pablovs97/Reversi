@@ -27,7 +27,7 @@ public class CellListener implements OnClickListener {
             juego.game.move(position);
             juego.changeTurn();
         } else if(juego.getState() != State.FINISHED) {
-            juego.showToast(R.drawable.shape_toast_grey, R.drawable.invalid, "Casilla inválida, vuelve a intentarlo.");
+            juego.showToast(R.drawable.shape_toast_grey, R.drawable.invalid, context.getString(R.string.casilla_invalida));
         }
     }
 }

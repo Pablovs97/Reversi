@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Cell implements Serializable{
 
+    // New white y New black creadas con el proposito de saber que celdas animar.
     private static final char WHITE = 'w';
     private static final char BLACK = 'b';
     private static final char NEW_WHITE = 'a';
@@ -97,18 +98,5 @@ public class Cell implements Serializable{
 
     public String toString() {
         return String.valueOf(this.state);
-    }
-
-    public static Cell cellFromChar(char c) {
-        switch (c) {
-            case WHITE:
-                return white();
-            case BLACK:
-                return black();
-            case HINT:
-                return hint();
-            default:
-                return empty();
-        }
     }
 }

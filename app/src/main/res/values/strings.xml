@@ -42,7 +42,6 @@
     <string name="casillas_vacias">Quedan %s casillas vacías</string>
     <string name="tu_turno">Tu turno</string>
     <string name="turno_rival">Turno rival</string>
-    <string name="jugador1">Jugador1</string>
     <string name="has_ganado_solo">¡HAS GANADO! :D</string>
     <string name="has_ganado">¡HAS GANADO! :D\nTu: %s casillas.\nOponente: %s casillas.\n%s casillas de diferencia.\n</string>
     <string name="has_perdido_solo">¡HAS PERDIDO! :C</string>
@@ -53,6 +52,10 @@
     <string name="tiempo_agotado_solo">¡TIEMPO AGOTADO! :O</string>
     <string name="tiempo_agotado">¡TIEMPO AGOTADO! :O\nOs habéis quedado sin completar el tablero.\nTu: %s casillas.\nOponente: %s casillas.\n%s casillas de diferencia.\nHan quedado %s casillas por cubrir.\n</string>
     <string name="Log">Alias: %s\nMedida tablero: %s\nTiempo transcurrido: %s s.</string>
+    <string name="no_undo">No puedes cargar el estado anterior.</string>
+    <string name="no_redo">No puedes cargar el estado</string>
+    <string name="casilla_invalida">Casilla inválida, vuelve a intentarlo.</string>
+    <string name="jugador1">Jugador 1</string>
 
 
 </resources>
