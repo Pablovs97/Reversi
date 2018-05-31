@@ -56,6 +56,7 @@
     <string name="no_redo">No puedes cargar el estado</string>
     <string name="casilla_invalida">Casilla inválida, vuelve a intentarlo.</string>
     <string name="jugador1">Jugador 1</string>
+    <string name="configuraci_n">Configuración</string>
 
 
 </resources>

@@ -5,4 +5,12 @@
         <item>Normal</item>
         <item>Difícil</item>
     </string-array>
+
+    <string-array name="medida">
+        <item>4</item>
+        <item>6</item>
+        <item>8</item>
+        <item>10</item>
+        <item>12</item>
+    </string-array>
 </resources>

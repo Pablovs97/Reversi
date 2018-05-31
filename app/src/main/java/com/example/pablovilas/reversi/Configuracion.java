@@ -10,7 +10,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class Configuracion extends AppCompatActivity {
+public class Configuracion extends BaseActivity {
 
     private EditText alias;
     private SeekBar seekBar;
