@@ -19,7 +19,7 @@ public class Menu_Principal extends BaseActivity {
     }
 
     public void muestraConfiguracion (View clickedButton) {
-        Intent in = new Intent(this, Configuracion.class);
+        Intent in = new Intent(this, Juego.class);
         startActivity(in);
     }
 

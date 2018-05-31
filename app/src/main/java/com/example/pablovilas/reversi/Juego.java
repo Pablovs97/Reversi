@@ -6,10 +6,12 @@ package com.example.pablovilas.reversi;
 */
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -54,12 +56,21 @@ public class Juego extends AppCompatActivity {
         turno = (TextView) findViewById(R.id.turno);
 
         // Datos de la pantalla de configuración.
-        Intent intent = getIntent();
+        //Intent intent = getIntent();
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        medida = Integer.parseInt(prefs.getString(getResources().getString(R.string.key_medida), "8"));
+        alias = prefs.getString(getResources().getString(R.string.key_alias), "Player 1");
+        control_tiempo = prefs.getBoolean(getResources().getString(R.string.key_control), false);
+        dificultad = prefs.getString(getResources().getString(R.string.key_dificultad), "Normal");
+
+        /*
         medida = Integer.parseInt(intent.getStringExtra("Medida"));
         alias = intent.getStringExtra("Alias");
         tiempo = intent.getIntExtra("Tiempo", 0);
         control_tiempo = intent.getBooleanExtra("Controlar", false);
         dificultad = intent.getStringExtra("Dificultad");
+        */
 
         // CPU level y alias en pantalla.
         TextView cpu_level = (TextView) findViewById(R.id.cpu_level);

@@ -3,7 +3,7 @@
 
     <EditTextPreference
         android:defaultValue="Player 1"
-        android:key="alias"
+        android:key="@string/key_alias"
         android:selectAllOnFocus="true"
         android:singleLine="true"
         android:dialogTitle="Introduce el alias"
@@ -14,14 +14,14 @@
         android:defaultValue="8"
         android:entries="@array/medida"
         android:entryValues="@array/medida"
-        android:key="medida"
+        android:key="@string/key_medida"
         android:dialogTitle="Selecciona la medida del tablero"
         android:icon="@drawable/parrilla"
         android:title="Medida tablero" />
 
     <CheckBoxPreference
         android:defaultValue="false"
-        android:key="control_tiempo"
+        android:key="@string/key_control"
         android:icon="@drawable/tiempo"
         android:title="Control del tiempo" />
 
@@ -29,7 +29,7 @@
         android:defaultValue="Normal"
         android:entries="@array/dificultad"
         android:entryValues="@array/dificultad"
-        android:key="dificultad"
+        android:key="@string/key_dificultad"
         android:dialogTitle="Selecciona la dificultad"
         android:icon="@drawable/dificultad"
         android:title="Dificultad" />

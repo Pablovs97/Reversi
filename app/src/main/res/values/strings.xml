@@ -57,6 +57,9 @@
     <string name="casilla_invalida">Casilla inválida, vuelve a intentarlo.</string>
     <string name="jugador1">Jugador 1</string>
     <string name="configuraci_n">Configuración</string>
-
+    <string name="key_alias">alias</string>
+    <string name="key_medida">medida</string>
+    <string name="key_control">control</string>
+    <string name="key_dificultad">dificultad</string>
 
 </resources>
