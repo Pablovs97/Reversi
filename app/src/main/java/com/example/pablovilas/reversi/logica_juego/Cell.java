@@ -1,4 +1,4 @@
-package com.example.pablovilas.reversi;
+package com.example.pablovilas.reversi.logica_juego;
 
 import java.io.Serializable;
 

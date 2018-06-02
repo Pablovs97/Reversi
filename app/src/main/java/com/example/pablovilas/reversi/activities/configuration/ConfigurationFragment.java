@@ -1,7 +1,9 @@
-package com.example.pablovilas.reversi;
+package com.example.pablovilas.reversi.activities.configuration;
 
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+
+import com.example.pablovilas.reversi.R;
 
 public class ConfigurationFragment extends PreferenceFragment {
     @Override

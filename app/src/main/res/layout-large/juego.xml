@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_margin_noBar"
+    android:paddingTop="@dimen/activity_horizontal_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_margin_noBar">
+    android:paddingRight="@dimen/activity_horizontal_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/element_horizontal_margin"
+        android:layout_marginEnd="64dp"
+        android:layout_marginStart="64dp"
         android:orientation="horizontal"
         android:weightSum="5">
 
@@ -40,7 +42,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="32sp"
                 android:textStyle="bold" />
 
             <RelativeLayout
@@ -53,12 +55,13 @@
                     android:id="@+id/player_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/element_horizontal_margin"
                     android:layout_marginStart="@dimen/element_horizontal_margin"
                     android:gravity="center"
                     android:singleLine="true"
                     android:text="@string/tu"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
+                    android:textSize="24sp"
                     android:textStyle="bold"
                     android:typeface="serif" />
 
@@ -66,12 +69,11 @@
                     android:id="@+id/player_alias"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/player_name"
-                    android:layout_marginStart="@dimen/element_horizontal_margin"
+                    android:layout_toEndOf="@id/player_name"
                     android:gravity="center"
                     android:singleLine="true"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
+                    android:textSize="24sp"
                     android:typeface="serif" />
 
             </RelativeLayout>
@@ -82,11 +84,11 @@
             android:id="@+id/time_min_sec"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:gravity="center"
             android:textColor="@color/blue"
-            android:textSize="18sp"
+            android:textSize="30sp"
             android:textStyle="bold"
             android:typeface="serif" />
 
@@ -115,7 +117,7 @@
                 android:gravity="center"
                 android:singleLine="true"
                 android:textColor="@color/black"
-                android:textSize="18sp"
+                android:textSize="32sp"
                 android:textStyle="bold" />
 
             <RelativeLayout
@@ -128,24 +130,24 @@
                     android:id="@+id/cpu_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/element_horizontal_margin"
                     android:layout_marginStart="@dimen/element_horizontal_margin"
                     android:gravity="center"
                     android:singleLine="true"
                     android:text="@string/rival"
                     android:textColor="@color/white"
-                    android:textSize="12sp"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/cpu_level"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/cpu_name"
-                    android:layout_marginStart="@dimen/element_horizontal_margin"
+                    android:layout_toEndOf="@id/cpu_name"
                     android:gravity="center"
                     android:singleLine="true"
                     android:textColor="@color/white"
-                    android:textSize="12sp" />
+                    android:textSize="24sp" />
 
             </RelativeLayout>
 
@@ -157,20 +159,20 @@
         android:id="@+id/num_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/element_horizontal_margin"
         android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/element_horizontal_margin"
         android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textSize="24dp"
         android:textStyle="bold"
         android:typeface="serif" />
 
     <GridView
         android:id="@+id/gridView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="500dp"
+        android:layout_height="500dp"
+        android:layout_gravity="center"
         android:adjustViewBounds="true"
         android:background="@drawable/shape_grid"
-        android:gravity="center"
         android:horizontalSpacing="0dp"
         android:paddingBottom="@dimen/element_horizontal_margin"
         android:paddingEnd="@dimen/element_horizontal_margin"
@@ -182,11 +184,11 @@
         android:id="@+id/turno"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/element_horizontal_margin"
-        android:layout_marginBottom="@dimen/element_horizontal_margin"
         android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/element_horizontal_margin"
+        android:layout_marginTop="@dimen/element_horizontal_margin"
         android:textColor="@color/black"
-        android:textSize="16sp"
+        android:textSize="24dp"
         android:textStyle="bold"
         android:typeface="serif" />
 
@@ -200,21 +202,21 @@
             android:id="@+id/undo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_grid"
-            android:textColor="@color/white"
             android:layout_marginEnd="@dimen/element_horizontal_margin"
-            android:textSize="12sp"
-            android:text="@string/undo" />
+            android:background="@drawable/shape_grid"
+            android:text="@string/undo"
+            android:textColor="@color/white"
+            android:textSize="24dp" />
 
         <Button
             android:id="@+id/redo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/shape_grid"
             android:layout_marginStart="@dimen/element_horizontal_margin"
+            android:background="@drawable/shape_grid"
+            android:text="@string/redo"
             android:textColor="@color/white"
-            android:textSize="12sp"
-            android:text="@string/redo" />
+            android:textSize="24dp" />
     </LinearLayout>
 
 </LinearLayout>

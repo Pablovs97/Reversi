@@ -1,7 +1,6 @@
-package com.example.pablovilas.reversi;
+package com.example.pablovilas.reversi.old;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -10,7 +9,11 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class Configuracion extends BaseActivity {
+import com.example.pablovilas.reversi.R;
+import com.example.pablovilas.reversi.activities.BaseActivity;
+import com.example.pablovilas.reversi.activities.juego.JuegoActivity;
+
+public class Configuration_old extends BaseActivity {
 
     private EditText alias;
     private SeekBar seekBar;
@@ -54,7 +57,7 @@ public class Configuracion extends BaseActivity {
     }
 
     public void comenzar(View view){
-        Intent intent = new Intent(this, Juego.class);
+        Intent intent = new Intent(this, JuegoActivity.class);
         if(alias.getText().toString().isEmpty()){
             intent.putExtra("Alias", getString(R.string.jugador1));
         } else {

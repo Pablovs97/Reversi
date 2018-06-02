@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Ayuda -->
+    <dimen name="textTitleSize">28sp</dimen>
+    <dimen name="textContentSize">24sp</dimen>
+    <dimen name="imageSize">300dp</dimen>
+
+    <!-- Consultar partidas -->
+    <dimen name="ListViewItemSize">14sp</dimen>
+
+</resources>

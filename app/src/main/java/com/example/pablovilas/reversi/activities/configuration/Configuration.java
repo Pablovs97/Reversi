@@ -1,4 +1,4 @@
-package com.example.pablovilas.reversi;
+package com.example.pablovilas.reversi.activities.configuration;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;

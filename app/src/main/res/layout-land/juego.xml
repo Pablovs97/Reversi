@@ -216,7 +216,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/element_horizontal_margin"
                 android:background="@drawable/shape_grid"
-                android:onClick="undo"
                 android:text="@string/undo"
                 android:textColor="@color/white"
                 android:textSize="12sp" />
@@ -227,7 +226,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/element_horizontal_margin"
                 android:background="@drawable/shape_grid"
-                android:onClick="redo"
                 android:text="@string/redo"
                 android:textColor="@color/white"
                 android:textSize="12sp" />

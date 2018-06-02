@@ -1,9 +1,5 @@
-package com.example.pablovilas.reversi;
-/*
+package com.example.pablovilas.reversi.activities.juego;
 
-
-
-*/
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +8,8 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,17 +21,31 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pablovilas.reversi.R;
+import com.example.pablovilas.reversi.activities.ImageAdapter;
+import com.example.pablovilas.reversi.activities.Resultados;
+import com.example.pablovilas.reversi.activities.listado_partidas.QueryFrag;
+import com.example.pablovilas.reversi.logica_juego.Board;
+import com.example.pablovilas.reversi.logica_juego.Cell;
+import com.example.pablovilas.reversi.logica_juego.Game;
+import com.example.pablovilas.reversi.logica_juego.Position;
+import com.example.pablovilas.reversi.logica_juego.State;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class Juego extends AppCompatActivity {
+public class ParrillaFrag extends Fragment {
 
     TextView numBlacks, numWhites, numEmpty, textTimer, turno;
     int medida, tiempo, contador;
     boolean control_tiempo;
+    boolean primer = true;
     String alias, dificultad;
     public Game game;
     GridView gv;
@@ -41,26 +53,49 @@ public class Juego extends AppCompatActivity {
     private static CountDownTimer cd;
     long timeLeft, initialTime;
     List<Board> board_state;
+    Button undo, redo;
+    private UpgradeLogListener listener;
+    String inicio_tirada;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.juego);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.juego, container, false);
+    }
 
-        getSupportActionBar().hide();
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-        numBlacks = (TextView) findViewById(R.id.num_blacks);
-        numWhites = (TextView) findViewById(R.id.num_whites);
-        numEmpty = (TextView) findViewById(R.id.num_empty);
-        textTimer = (TextView) findViewById(R.id.time_min_sec);
-        turno = (TextView) findViewById(R.id.turno);
+        numBlacks = (TextView) getView().findViewById(R.id.num_blacks);
+        numWhites = (TextView) getView().findViewById(R.id.num_whites);
+        numEmpty = (TextView) getView().findViewById(R.id.num_empty);
+        textTimer = (TextView) getView().findViewById(R.id.time_min_sec);
+        turno = (TextView) getView().findViewById(R.id.turno);
+
+        undo = (Button) getView().findViewById(R.id.undo);
+        redo = (Button) getView().findViewById(R.id.redo);
+
+        undo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                undo();
+            }
+        });
+
+        redo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                redo();
+            }
+        });
 
         // Datos de la pantalla de configuración.
         //Intent intent = getIntent();
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         medida = Integer.parseInt(prefs.getString(getResources().getString(R.string.key_medida), "8"));
         alias = prefs.getString(getResources().getString(R.string.key_alias), "Player 1");
+        tiempo = medida*20;
         control_tiempo = prefs.getBoolean(getResources().getString(R.string.key_control), false);
         dificultad = prefs.getString(getResources().getString(R.string.key_dificultad), "Normal");
 
@@ -73,9 +108,9 @@ public class Juego extends AppCompatActivity {
         */
 
         // CPU level y alias en pantalla.
-        TextView cpu_level = (TextView) findViewById(R.id.cpu_level);
+        TextView cpu_level = (TextView) getView().findViewById(R.id.cpu_level);
         cpu_level.setText(dificultad);
-        TextView player_alias = (TextView) findViewById(R.id.player_alias);
+        TextView player_alias = (TextView) getView().findViewById(R.id.player_alias);
         player_alias.setText(alias);
 
         // Color rojo para el temporizador si hay control de tiempo.
@@ -89,9 +124,9 @@ public class Juego extends AppCompatActivity {
         board_state.add(new Board(game.board));
 
         // GridView -> Parrilla
-        gv = (GridView) findViewById(R.id.gridView);
+        gv = (GridView) getView().findViewById(R.id.gridView);
         gv.setNumColumns(medida);
-        adapter = new ImageAdapter(getApplicationContext(), game.board.cells, this);
+        adapter = new ImageAdapter(getActivity(), game.board.cells, this);
         gv.setAdapter(adapter);
         setNumFichas();
 
@@ -113,17 +148,33 @@ public class Juego extends AppCompatActivity {
             }
             initialTime = System.currentTimeMillis();
         }
+
+        initialLog();
     }
 
-    public void undo(View view){
+    public void initialLog(){
+        String str = String.format(getString(R.string.log_alias_medida), alias, medida);
+        if(control_tiempo){
+            str += getString(R.string.log_si_control);
+        } else {
+            str += getString(R.string.log_no_control);
+        }
+        str += "\n";
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", new Locale("es", "ES"));
+        Date date = new Date();
+        inicio_tirada = dateFormat.format(date);
+        listener.onClickUpgradeLog(str);
+    }
+
+    public void undo(){
         // Sólo puede hacerse Undo cuando es el turno del jugador
         if(getState() == State.WHITE_TURN){
-            Toast.makeText(this, "Espera tu turno", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Espera tu turno", Toast.LENGTH_SHORT).show();
         } else if (getState() == State.BLACK_TURN) {
             if (board_state.size() - contador - 1 > 0) {
                 contador++;
                 game.board = new Board(board_state.get(board_state.size() - contador - 1));
-                adapter = new ImageAdapter(this, game.board.cells, this);
+                adapter = new ImageAdapter(getActivity(), game.board.cells, this);
                 gv.setAdapter(adapter);
                 setNumFichas();
             } else { // No podemos ir más para detrás.
@@ -132,15 +183,15 @@ public class Juego extends AppCompatActivity {
         }
     }
 
-    public void redo(View view){
+    public void redo(){
         // Sólo puede hacerse Redo cuando es el turno del jugador
         if(getState() == State.WHITE_TURN){
-            Toast.makeText(this, "Espera tu turno", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Espera tu turno", Toast.LENGTH_SHORT).show();
         } else if (getState() == State.BLACK_TURN) {
             if (board_state.size() - contador < board_state.size()) {
                 contador--;
                 game.board = new Board(board_state.get(board_state.size() - contador - 1));
-                adapter = new ImageAdapter(this, game.board.cells, this);
+                adapter = new ImageAdapter(getActivity(), game.board.cells, this);
                 gv.setAdapter(adapter);
                 setNumFichas();
             } else { // No podemos ir más para delante.
@@ -160,7 +211,7 @@ public class Juego extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // Board
         outState.putSerializable("Board", game.board.cells);
@@ -175,7 +226,7 @@ public class Juego extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         // Paramos el contador.
         cd.cancel();
@@ -183,7 +234,7 @@ public class Juego extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         // Iniciamos el contador, hacía arriba o hacía abajo dependiendo de si hay o no control de tiempo.
         if(cd == null){
@@ -196,13 +247,14 @@ public class Juego extends AppCompatActivity {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        if (savedInstanceState != null){
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if (savedInstanceState != null) {
             game.board.cells = (Cell[][]) savedInstanceState.getSerializable("Board");
             game.board.black = savedInstanceState.getInt("Blacks");
             game.board.white = savedInstanceState.getInt("Whites");
             setNumFichas();
-            adapter = new ImageAdapter(this, game.board.cells, this);
+            adapter = new ImageAdapter(getActivity(), game.board.cells, this);
             board_state = savedInstanceState.getParcelableArrayList("UndoRedoList");
             contador = savedInstanceState.getInt("Contador");
             gv.setAdapter(adapter);
@@ -221,12 +273,19 @@ public class Juego extends AppCompatActivity {
         }
     }
 
-    public void goToResults(String msg){
-        final Intent intent = new Intent(this, Resultados.class);
+    public void goToResults(String msg, String state){
+        final Intent intent = new Intent(getActivity(), Resultados.class);
         intent.putExtra("Log", msg + String.format(getString(R.string.Log), this.alias, String.valueOf(this.medida), String.valueOf(tiempo - timeLeft/1000)));
+        intent.putExtra("alias", String.valueOf(this.alias));
+        intent.putExtra("medida", String.valueOf(this.medida));
+        intent.putExtra("control", String.valueOf(this.control_tiempo));
+        intent.putExtra("num_blacks", String.valueOf(this.game.board.black));
+        intent.putExtra("num_whites", String.valueOf(this.game.board.white));
+        intent.putExtra("total_time", String.valueOf(tiempo - timeLeft/1000));
+        intent.putExtra("state", state);
         new Handler().postDelayed(new Runnable() {
             public void run() {
-                finish();
+                getActivity().finish();
                 startActivity(intent);
             }
         }, 1000);
@@ -246,7 +305,7 @@ public class Juego extends AppCompatActivity {
                 cd.cancel();
                 game.state = State.FINISHED;
                 showToast(R.drawable.shape_toast_red, R.drawable.tiempo_acabado, getString(R.string.tiempo_agotado_solo));
-                goToResults(String.format(getString(R.string.tiempo_agotado), String.valueOf(game.board.black), String.valueOf(game.board.white), String.valueOf(Math.abs(game.board.black - game.board.white)), String.valueOf(medida*medida - (game.board.black + game.board.white))));
+                goToResults(String.format(getString(R.string.tiempo_agotado), String.valueOf(game.board.black), String.valueOf(game.board.white), String.valueOf(Math.abs(game.board.black - game.board.white)), String.valueOf(medida*medida - (game.board.black + game.board.white))), "TIEMPO AGOTADO");
             }
 
         }.start();
@@ -394,7 +453,7 @@ public class Juego extends AppCompatActivity {
         } else if(getState() == State.FINISHED){
             if((medida*medida - (game.board.black + game.board.white)) > 0){
                 showToast(R.drawable.shape_toast_red, R.drawable.bloqueo, getString(R.string.bloqueo_solo));
-                goToResults(String.format(getString(R.string.bloqueo), String.valueOf(game.board.black), String.valueOf(game.board.white), String.valueOf(Math.abs(game.board.black - game.board.white)), String.valueOf(medida*medida - (game.board.black + game.board.white))));
+                goToResults(String.format(getString(R.string.bloqueo), String.valueOf(game.board.black), String.valueOf(game.board.white), String.valueOf(Math.abs(game.board.black - game.board.white)), String.valueOf(medida*medida - (game.board.black + game.board.white))), "BLOQUEO");
             }
         }
 
@@ -408,20 +467,20 @@ public class Juego extends AppCompatActivity {
     private void checkFinish(){
         if(game.board.black > game.board.white){
             showToast(R.drawable.shape_toast_green, R.drawable.victoria, getString(R.string.has_ganado_solo));
-            goToResults(String.format(getString(R.string.has_ganado), String.valueOf(game.board.black), String.valueOf(game.board.white), String.valueOf(game.board.black - game.board.white)));
+            goToResults(String.format(getString(R.string.has_ganado), String.valueOf(game.board.black), String.valueOf(game.board.white), String.valueOf(game.board.black - game.board.white)), "VICTORIA");
         } else if(game.board.black < game.board.white){
             showToast(R.drawable.shape_toast_red, R.drawable.derrota, getString(R.string.has_perdido_solo));
-            goToResults(String.format(getString(R.string.has_perdido), String.valueOf(game.board.white), String.valueOf(game.board.black), String.valueOf(game.board.white - game.board.black)));
+            goToResults(String.format(getString(R.string.has_perdido), String.valueOf(game.board.white), String.valueOf(game.board.black), String.valueOf(game.board.white - game.board.black)), "DERROTA");
         } else if(game.board.black == game.board.white){
             showToast(R.drawable.shape_toast_grey, R.drawable.empate, getString(R.string.habeis_empatado));
-            goToResults(getString(R.string.habeis_empatado));
+            goToResults(getString(R.string.habeis_empatado), "EMPATE");
         }
     }
 
     // Muestra el Toast personalizado, el cuál consta de un ImageView y un TextView.
     public void showToast(int toast_shape, int image, String msg){
-        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.toast_layout, (ViewGroup) findViewById(R.id.toast));
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.toast_layout, (ViewGroup) getView().findViewById(R.id.toast));
         layout.setBackgroundResource(toast_shape);
 
         ImageView imageView = (ImageView) layout.findViewById(R.id.toast_iv);
@@ -430,7 +489,7 @@ public class Juego extends AppCompatActivity {
         TextView text = (TextView) layout.findViewById(R.id.toast_tv);
         text.setText(msg);
 
-        Toast toast = new Toast(this);
+        Toast toast = new Toast(getActivity());
         toast.setGravity(Gravity.BOTTOM, 0, 50);
         toast.setDuration(Toast.LENGTH_LONG);
         toast.setView(layout);
@@ -441,4 +500,24 @@ public class Juego extends AppCompatActivity {
         return this.game.state;
     }
 
+    public interface UpgradeLogListener {
+        void onClickUpgradeLog(String str);
+    }
+
+    public void setUpgradeLogListener(UpgradeLogListener listener) {
+        this.listener = listener;
+    }
+
+    public void updateLog(String s){
+        DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss", new Locale("es", "ES"));
+        Date date = new Date();
+        String fin_tirada = dateFormat.format(date);
+        s += String.format(getString(R.string.log_casillas), medida*medida - (game.board.black + game.board.white), inicio_tirada, fin_tirada);
+        if(control_tiempo){
+            s += String.format(getString(R.string.log_tiempo), textTimer.getText());
+        }
+        s += "\n";
+        inicio_tirada = fin_tirada;
+        listener.onClickUpgradeLog(s);
+    }
 }

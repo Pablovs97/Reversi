@@ -6,7 +6,16 @@
 
     <dimen name="activity_margin_noBar">32dp</dimen>
 
-
     <dimen name="element_horizontal_margin">8dp</dimen>
     <dimen name="element_vertical_margin">8dp</dimen>
+
+    <!-- Ayuda -->
+    <dimen name="textTitleSize">14sp</dimen>
+    <dimen name="textContentSize">12sp</dimen>
+    <dimen name="imageSize">200dp</dimen>
+
+    <!-- Consultar partidas -->
+    <dimen name="ListViewItemSize">14sp</dimen>
+
+
 </resources>

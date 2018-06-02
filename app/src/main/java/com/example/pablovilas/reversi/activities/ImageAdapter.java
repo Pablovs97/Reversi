@@ -1,4 +1,4 @@
-package com.example.pablovilas.reversi;
+package com.example.pablovilas.reversi.activities;
 
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
@@ -7,16 +7,21 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
+
+import com.example.pablovilas.reversi.R;
+import com.example.pablovilas.reversi.activities.juego.ParrillaFrag;
+import com.example.pablovilas.reversi.logica_juego.Cell;
+import com.example.pablovilas.reversi.logica_juego.Position;
+import com.example.pablovilas.reversi.logica_juego.State;
 
 import java.io.Serializable;
 
 public class ImageAdapter extends BaseAdapter implements Serializable{
     private Context context;
     private Cell[][] cells;
-    Juego juego;
+    private ParrillaFrag juego;
 
-    ImageAdapter(Context context, Cell[][] cells, Juego juego) {
+    public ImageAdapter(Context context, Cell[][] cells, ParrillaFrag juego) {
         this.context = context;
         this.cells = cells;
         this.juego = juego;

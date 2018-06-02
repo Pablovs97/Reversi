@@ -37,8 +37,8 @@
     <!-- Juego -->
     <string name="undo">Undo</string>
     <string name="redo">Redo</string>
-    <string name="rival">RIVAL</string>
-    <string name="tu">TU</string>
+    <string name="rival">RIVAL - </string>
+    <string name="tu">TÚ - </string>
     <string name="casillas_vacias">Quedan %s casillas vacías</string>
     <string name="tu_turno">Tu turno</string>
     <string name="turno_rival">Turno rival</string>
@@ -46,7 +46,7 @@
     <string name="has_ganado">¡HAS GANADO! :D\nTu: %s casillas.\nOponente: %s casillas.\n%s casillas de diferencia.\n</string>
     <string name="has_perdido_solo">¡HAS PERDIDO! :C</string>
     <string name="has_perdido">¡HAS PERDIDO! :C\nOponente: %s casillas.\nTu: %s casillas.\n%s casillas de diferencia.\n</string>
-    <string name="habeis_empatado">¡HABÉIS EMPATADO! :|</string>
+    <string name="habeis_empatado">¡HABÉIS EMPATADO! :|\n</string>
     <string name="bloqueo_solo">¡BLOQUEO! :S</string>
     <string name="bloqueo">¡BLOQUEO! :S\nOs habéis quedado sin completar el tablero.\nTu: %s casillas.\nOponente: %s casillas.\n%s casillas de diferencia.\nHan quedado %s casillas por cubrir.\n</string>
     <string name="tiempo_agotado_solo">¡TIEMPO AGOTADO! :O</string>
@@ -61,5 +61,16 @@
     <string name="key_medida">medida</string>
     <string name="key_control">control</string>
     <string name="key_dificultad">dificultad</string>
+    <string name="consultar_partidas">Consultar partidas</string>
+    <string name="detalles_de_la_partida">Detalles de la partida…</string>
+
+    <!--Log-->
+    <string name="log">LOG…</string>
+    <string name="log_alias_medida">\n\tAlias = %s | Medida tablero = %d\n</string>
+    <string name="log_no_control">\tSin control del tiempo</string>
+    <string name="log_si_control">\tCon control del tiempo</string>
+    <string name="log_casilla">\n\t\tCasilla seleccionada (%d,%d)</string>
+    <string name="log_casillas">\n\t\tNº casillas pendientes = %d\n\t\tTiempo ini. tirada: %s\n\t\tTiempo fin. tirada: %s</string>
+    <string name="log_tiempo">\n\t\tTiempo restante = %s</string>
 
 </resources>

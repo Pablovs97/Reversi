@@ -1,9 +1,9 @@
-package com.example.pablovilas.reversi;
+package com.example.pablovilas.reversi.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+
+import com.example.pablovilas.reversi.R;
 
 public class Ayuda extends BaseActivity {
 

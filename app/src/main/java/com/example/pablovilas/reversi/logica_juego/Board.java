@@ -1,8 +1,7 @@
-package com.example.pablovilas.reversi;
+package com.example.pablovilas.reversi.logica_juego;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import java.util.StringTokenizer;
 
 public class Board implements Parcelable {
 
@@ -12,7 +11,7 @@ public class Board implements Parcelable {
     public int black;
     public int white;
 
-    Board(int medida) {
+    public Board(int medida) {
         this.medida = medida;
         this.cells = new Cell[medida][medida];
         this.black = 0;
@@ -20,7 +19,7 @@ public class Board implements Parcelable {
         initBoard();
     }
 
-    Board(Board other) {
+    public Board(Board other) {
         this.medida = other.medida;
         this.cells = other.getCells();
         this.black = other.black;

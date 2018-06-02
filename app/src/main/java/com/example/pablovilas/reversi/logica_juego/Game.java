@@ -1,14 +1,14 @@
-package com.example.pablovilas.reversi;
+package com.example.pablovilas.reversi.logica_juego;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Game implements Parcelable{
+public class Game implements Parcelable {
 
     public Board board;
     public State state;
 
-    Game(Board board) {
+    public Game(Board board) {
         this.board = board;
         this.state = State.BLACK_TURN;
         setHints();

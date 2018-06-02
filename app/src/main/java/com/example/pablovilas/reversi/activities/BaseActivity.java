@@ -1,4 +1,4 @@
-package com.example.pablovilas.reversi;
+package com.example.pablovilas.reversi.activities;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.example.pablovilas.reversi.R;
+import com.example.pablovilas.reversi.activities.configuration.Configuration;
+
+// Base activity containing menu.
 public class BaseActivity extends AppCompatActivity {
 
     @Override
