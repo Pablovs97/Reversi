@@ -1,5 +1,6 @@
 package com.example.pablovilas.reversi.activities.listado_partidas;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -8,11 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pablovilas.reversi.R;
 import com.example.pablovilas.reversi.bbdd.PartidasBD;
+import com.example.pablovilas.reversi.bbdd.PartidasClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +25,7 @@ public class QueryFrag extends android.support.v4.app.Fragment {
 
     private ResultadoListener listener;
     private Cursor c;
+    private List<PartidasClass> entries;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -37,24 +42,20 @@ public class QueryFrag extends android.support.v4.app.Fragment {
         String[] campos = new String[]{"alias", "date", "medida", "control", "num_blacks", "num_whites", "total_time", "state"};
         c = db.query("Partidas", campos, null, null, null, null, null, null);
 
-        List<String> entries = new ArrayList<>();
+        entries = new ArrayList<>();
 
         if(c.moveToFirst()){
             do {
                 String alias = c.getString(0);
                 String date = c.getString(1);
                 String state = c.getString(7);
-                alias = alias + " - " + date + "\n" + state;
-                entries.add(alias);
+                //alias = alias + " - " + date + "\n" + state;
+                entries.add(new PartidasClass(alias, date, state));
             } while (c.moveToNext());
         }
 
         ListView lv = (ListView) getView().findViewById(R.id.lv);
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(getActivity(),
-                        android.R.layout.simple_list_item_1,
-                        entries);
-        lv.setAdapter(adapter);
+        lv.setAdapter(new AdaptadorPartidas(this));
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -80,6 +81,62 @@ public class QueryFrag extends android.support.v4.app.Fragment {
                 }
             }
         });
+    }
+
+    class AdaptadorPartidas extends ArrayAdapter<PartidasClass> {
+
+        Activity context;
+
+        AdaptadorPartidas(QueryFrag fragmentListado) {
+            super(fragmentListado.getActivity(), R.layout.listview_item, entries);
+            this.context = fragmentListado.getActivity();
+        }
+
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = context.getLayoutInflater();
+            View item = inflater.inflate(R.layout.listview_item, null);
+
+            TextView alias = (TextView) item.findViewById(R.id.alias);
+            alias.setText(entries.get(position).getAlias());
+
+            TextView date = (TextView) item.findViewById(R.id.date);
+            date.setText(entries.get(position).getDate());
+
+            TextView status = (TextView) item.findViewById(R.id.status);
+            status.setText(entries.get(position).getState());
+
+            ImageView image = (ImageView) item.findViewById(R.id.image);
+
+            switch (entries.get(position).getState()){
+                case "VICTORIA":
+                    image.setBackgroundResource(R.drawable.victoria);
+                    image.setBackgroundTintList(getActivity().getColorStateList(R.color.green));
+                    status.setTextColor(getActivity().getColorStateList(R.color.green));
+                    break;
+                case "DERROTA":
+                    image.setBackgroundResource(R.drawable.derrota);
+                    image.setBackgroundTintList(getActivity().getColorStateList(R.color.red));
+                    status.setTextColor(getActivity().getColorStateList(R.color.red));
+                    break;
+                case "EMPATE":
+                    image.setBackgroundResource(R.drawable.empate);
+                    image.setBackgroundTintList(getActivity().getColorStateList(R.color.yellow));
+                    status.setTextColor(getActivity().getColorStateList(R.color.yellow));
+                    break;
+                case "BLOQUEO":
+                    image.setBackgroundResource(R.drawable.bloqueo);
+                    image.setBackgroundTintList(getActivity().getColorStateList(R.color.orange));
+                    status.setTextColor(getActivity().getColorStateList(R.color.orange));
+                    break;
+                case "TIEMPO AGOTADO":
+                    image.setBackgroundResource(R.drawable.tiempo_acabado);
+                    image.setBackgroundTintList(getActivity().getColorStateList(R.color.dark_blue));
+                    status.setTextColor(getActivity().getColorStateList(R.color.dark_blue));
+                    break;
+            }
+
+            return(item);
+        }
     }
 
     private void showToast(String text) {

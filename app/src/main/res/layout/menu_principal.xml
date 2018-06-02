@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
@@ -9,18 +9,19 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:layout_marginTop="@dimen/element_horizontal_margin"
-        android:src="@drawable/app_ogo" />
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="@dimen/logoWidthSize"
+            android:layout_height="@dimen/logoHeightSize"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:src="@drawable/app_ogo" />
 
         <Button
             android:id="@+id/ayuda"
@@ -29,6 +30,7 @@
             android:layout_gravity="center"
             android:background="@drawable/shape_grid"
             android:onClick="muestraAyuda"
+            android:textSize="@dimen/buttonTextSize"
             android:text="@string/ayuda"
             android:textColor="@color/white" />
 
@@ -40,6 +42,7 @@
             android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:background="@drawable/shape_grid"
             android:onClick="comenzarPartida"
+            android:textSize="@dimen/buttonTextSize"
             android:text="@string/comenzar_partida"
             android:textColor="@color/white" />
 
@@ -50,6 +53,7 @@
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:textSize="@dimen/buttonTextSize"
             android:background="@drawable/shape_grid"
             android:onClick="consultarPartidas"
             android:text="@string/consultar_partidas"
@@ -60,10 +64,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:textSize="@dimen/buttonTextSize"
             android:background="@drawable/shape_grid"
             android:onClick="salir"
             android:text="@string/salir"
             android:textColor="@color/white" />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

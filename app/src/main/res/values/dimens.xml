@@ -9,6 +9,11 @@
     <dimen name="element_horizontal_margin">8dp</dimen>
     <dimen name="element_vertical_margin">8dp</dimen>
 
+    <!-- Menu -->
+    <dimen name="buttonTextSize">14sp</dimen>
+    <dimen name="logoWidthSize">250dp</dimen>
+    <dimen name="logoHeightSize">150dp</dimen>
+
     <!-- Ayuda -->
     <dimen name="textTitleSize">14sp</dimen>
     <dimen name="textContentSize">12sp</dimen>

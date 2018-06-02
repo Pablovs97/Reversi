@@ -8,7 +8,7 @@
         android:singleLine="true"
         android:hint="This is my hint"
         android:dialogTitle="Introduce el alias"
-        android:dialogMessage="Alias de Jugador"
+        android:summary="Alias de Jugador"
         android:icon="@drawable/user"
         android:title="Alias" />
 
@@ -19,12 +19,14 @@
         android:key="@string/key_medida"
         android:dialogTitle="Selecciona la medida del tablero"
         android:icon="@drawable/parrilla"
+        android:summary="Medida del tablero de juego"
         android:title="Medida tablero" />
 
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="@string/key_control"
         android:icon="@drawable/tiempo"
+        android:summary="Marcar para limitar el tiempo de la partida."
         android:title="Control del tiempo" />
 
     <ListPreference
@@ -34,5 +36,6 @@
         android:key="@string/key_dificultad"
         android:dialogTitle="Selecciona la dificultad"
         android:icon="@drawable/dificultad"
+        android:summary="Nivel de dificultad de la CPU"
         android:title="Dificultad" />
 </PreferenceScreen>

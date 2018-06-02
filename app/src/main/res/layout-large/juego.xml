@@ -206,7 +206,7 @@
             android:background="@drawable/shape_grid"
             android:text="@string/undo"
             android:textColor="@color/white"
-            android:textSize="24dp" />
+            android:textSize="24sp" />
 
         <Button
             android:id="@+id/redo"
@@ -216,7 +216,7 @@
             android:background="@drawable/shape_grid"
             android:text="@string/redo"
             android:textColor="@color/white"
-            android:textSize="24dp" />
+            android:textSize="24sp" />
     </LinearLayout>
 
 </LinearLayout>

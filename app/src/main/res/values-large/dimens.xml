@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Menu -->
+    <dimen name="buttonTextSize">28sp</dimen>
+    <dimen name="logoWidthSize">500dp</dimen>
+    <dimen name="logoHeightSize">300dp</dimen>
+
     <!-- Ayuda -->
     <dimen name="textTitleSize">28sp</dimen>
     <dimen name="textContentSize">24sp</dimen>
