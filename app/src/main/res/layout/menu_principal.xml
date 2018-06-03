@@ -49,13 +49,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_margin_noBar"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
-            android:textSize="@dimen/buttonTextSize"
             android:background="@drawable/shape_grid"
             android:onClick="consultarPartidas"
             android:text="@string/consultar_partidas"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/buttonTextSize" />
 
         <Button
             android:id="@+id/salir"
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textSize="@dimen/buttonTextSize"
-            android:background="@drawable/shape_grid"
+            android:background="@drawable/shape_toast_grey"
             android:onClick="salir"
             android:text="@string/salir"
             android:textColor="@color/white" />

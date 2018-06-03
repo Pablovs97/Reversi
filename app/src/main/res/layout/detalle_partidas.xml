@@ -2,15 +2,19 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:orientation="vertical"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_margin_noBar"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin">
 
     <TextView
-        android:text="@string/detalles_de_la_partida"
-        android:textStyle="bold"
-        android:textSize="40sp"
-        android:textColor="@color/black"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
+        android:text="@string/detalles_de_la_partida"
+        android:textColor="@color/black"
+        android:textSize="@dimen/textTitleSize"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/detalle"
@@ -18,5 +22,5 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
         android:textColor="@color/black"
-        android:textSize="36sp" />
+        android:textSize="@dimen/textTitleSize" />
 </LinearLayout>

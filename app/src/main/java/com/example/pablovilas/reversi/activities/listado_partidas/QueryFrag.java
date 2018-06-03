@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,9 @@ import com.example.pablovilas.reversi.bbdd.PartidasClass;
 import java.util.ArrayList;
 import java.util.List;
 
-public class QueryFrag extends android.support.v4.app.Fragment {
+public class QueryFrag extends Fragment {
 
     private ResultadoListener listener;
-    private Cursor c;
     private List<PartidasClass> entries;
 
     @Override
@@ -36,23 +36,12 @@ public class QueryFrag extends android.support.v4.app.Fragment {
     public void onActivityCreated(Bundle bundle) {
         super.onActivityCreated(bundle);
 
-        PartidasBD pdb = new PartidasBD(getActivity(), "Partidas", null, 2);
-        SQLiteDatabase db = pdb.getWritableDatabase();
+        final PartidasBD pdb = new PartidasBD(getActivity());
 
-        String[] campos = new String[]{"alias", "date", "medida", "control", "num_blacks", "num_whites", "total_time", "state"};
-        c = db.query("Partidas", campos, null, null, null, null, null, null);
+        // Obtener todas las partidas guardadas.
+        entries = pdb.allPartidas();
 
-        entries = new ArrayList<>();
-
-        if(c.moveToFirst()){
-            do {
-                String alias = c.getString(0);
-                String date = c.getString(1);
-                String state = c.getString(7);
-                entries.add(new PartidasClass(alias, date, state));
-            } while (c.moveToNext());
-        }
-
+        // Añadimos al listView el adaptador personalizado.
         ListView lv = (ListView) getView().findViewById(R.id.lv);
         lv.setAdapter(new AdaptadorPartidas(this));
 
@@ -60,23 +49,16 @@ public class QueryFrag extends android.support.v4.app.Fragment {
             @Override
             public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
                 if(listener!=null){
-                    if (c.moveToPosition(pos)){
-                        String alias = c.getString(0);
-                        String date = c.getString(1);
-                        String medida = c.getString(2);
-                        String control = c.getString(3);
-                        String num_blacks = c.getString(4);
-                        String num_whites = c.getString(5);
-                        String total_time = c.getString(6);
-                        String state = c.getString(7);
-                        listener.onResultadoSeleccionado(state + "\n" +
-                                "Alias: " + alias + "\n" +
-                                "Fecha: " + date + "\n" +
-                                "Medida: " + medida + "\n" +
-                                "Num. fichas negras: " + num_blacks + "\n" +
-                                "Num. fichas blancas: " + num_whites + "\n" +
-                                "Tiempo total: " + total_time + "\n");
-                    }
+                    // Conseguir la partida seleccionada.
+                    PartidasClass selectedPartida = pdb.getSelectedPartida(pos);
+
+                    listener.onResultadoSeleccionado(selectedPartida.getState() + "\n" +
+                            "Alias: " + selectedPartida.getAlias() + "\n" +
+                            "Fecha: " + selectedPartida.getDate() + "\n" +
+                            "Medida: " + selectedPartida.getMedida() + "x" + selectedPartida.getMedida() + " casillas\n" +
+                            "Num. fichas negras: " + selectedPartida.getNum_blacks() + "\n" +
+                            "Num. fichas blancas: " + selectedPartida.getNum_whites() + "\n" +
+                            "Tiempo total: " + selectedPartida.getTotal_time() + " segundos\n");
                 }
             }
         });

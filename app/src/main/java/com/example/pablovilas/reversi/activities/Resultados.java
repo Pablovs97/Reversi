@@ -10,6 +10,7 @@ import android.widget.EditText;
 import com.example.pablovilas.reversi.activities.listado_partidas.AccessBDActivity;
 import com.example.pablovilas.reversi.bbdd.PartidasBD;
 import com.example.pablovilas.reversi.R;
+import com.example.pablovilas.reversi.bbdd.PartidasClass;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -36,31 +37,25 @@ public class Resultados extends AppCompatActivity{
         Intent intent = getIntent();
         log.setText(intent.getStringExtra("Log"));
 
-        PartidasBD pdb = new PartidasBD(this, "Partidas", null, 2);
-        SQLiteDatabase db = pdb.getWritableDatabase();
-        if(db != null){
-            String alias = intent.getStringExtra("alias");
-            String medida = intent.getStringExtra("medida");
-            String control = intent.getStringExtra("control");
-            String num_blacks = intent.getStringExtra("num_blacks");
-            String num_whites = intent.getStringExtra("num_whites");
-            String total_time = intent.getStringExtra("total_time");
-            String state = intent.getStringExtra("state");
+        insertPartida(intent, dateFormat.format(date));
+    }
 
-            db.execSQL("INSERT INTO Partidas (alias, date, medida, control, num_blacks, num_whites, total_time, state) VALUES (" +
-                    "'" + alias +"', " +
-                    "'" + dateFormat.format(date) + "', " +
-                    "'" + medida + "', " +
-                    "'" + control + "', " +
-                    "'" + num_blacks + "', " +
-                    "'" + num_whites + "', " +
-                    "'" + total_time + "', " +
-                    "'" + state + "')");
+    // Inserta partida en la base de datos
+    public void insertPartida(Intent intent, String date){
+        PartidasBD pdb = new PartidasBD(this);
 
-            db.close();
-        }
+        PartidasClass partida = new PartidasClass();
 
+        partida.setAlias(intent.getStringExtra("alias"));
+        partida.setDate(date);
+        partida.setMedida(intent.getStringExtra("medida"));
+        partida.setControl(intent.getStringExtra("control"));
+        partida.setNum_blacks(intent.getStringExtra("num_blacks"));
+        partida.setNum_whites(intent.getStringExtra("num_whites"));
+        partida.setTotal_time(intent.getStringExtra("total_time"));
+        partida.setState(intent.getStringExtra("state"));
 
+        pdb.insertPartida(partida);
     }
 
     public void sendMail(View view) {

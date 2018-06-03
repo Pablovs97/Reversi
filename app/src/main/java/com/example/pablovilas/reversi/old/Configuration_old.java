@@ -27,7 +27,7 @@ public class Configuration_old extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.configuracion);
+        setContentView(R.layout.configuration_old);
 
         alias = (EditText) findViewById(R.id.alias_et);
         seekBar = (SeekBar) findViewById(R.id.seekBar);
