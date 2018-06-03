@@ -4,8 +4,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
 import com.example.pablovilas.reversi.R;
+import com.example.pablovilas.reversi.activities.BaseActivity;
 
-public class DetailRegActivity extends FragmentActivity {
+public class DetailRegActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

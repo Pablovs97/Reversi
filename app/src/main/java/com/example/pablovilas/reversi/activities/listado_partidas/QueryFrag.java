@@ -49,7 +49,6 @@ public class QueryFrag extends android.support.v4.app.Fragment {
                 String alias = c.getString(0);
                 String date = c.getString(1);
                 String state = c.getString(7);
-                //alias = alias + " - " + date + "\n" + state;
                 entries.add(new PartidasClass(alias, date, state));
             } while (c.moveToNext());
         }

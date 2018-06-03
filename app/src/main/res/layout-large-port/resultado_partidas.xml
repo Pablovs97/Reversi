@@ -1,19 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical" >
 
-    <fragment class="com.example.pablovilas.reversi.activities.listado_partidas.QueryFrag"
-        android:layout_height="0px"
+    <LinearLayout
+        android:layout_above="@+id/buttons"
+        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_weight="60"
-        android:id="@+id/listado_partidas"   />
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-    <fragment class="com.example.pablovilas.reversi.activities.listado_partidas.RegFrag"
-        android:layout_height="0px"
+        <fragment class="com.example.pablovilas.reversi.activities.listado_partidas.QueryFrag"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_weight="60"
+            android:id="@+id/listado_partidas"   />
+
+        <fragment class="com.example.pablovilas.reversi.activities.listado_partidas.RegFrag"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_weight="40"
+            android:id="@+id/fragmento_detalle"    />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/buttons"
         android:layout_width="match_parent"
-        android:layout_weight="40"
-        android:id="@+id/fragmento_detalle"    />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal">
 
-</LinearLayout>
+        <Button
+            android:id="@+id/ayuda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/element_horizontal_margin"
+            android:layout_marginTop="@dimen/element_horizontal_margin"
+            android:background="@drawable/shape_grid"
+            android:paddingEnd="@dimen/activity_vertical_margin"
+            android:paddingStart="@dimen/activity_vertical_margin"
+            android:onClick="volver"
+            android:text="@string/volver"
+            android:textColor="@color/white"
+            android:textSize="@dimen/buttonTextSize" />
+
+    </LinearLayout>
+
+</RelativeLayout>

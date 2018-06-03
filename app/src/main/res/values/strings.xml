@@ -6,6 +6,7 @@
     <string name="menu_principal">Menu Principal</string>
     <string name="comenzar_partida">Comenzar Partida</string>
     <string name="ayuda">Ayuda</string>
+    <string name="consultar_partidas">Consultar partidas</string>
 
     <!-- Ayuda -->
     <string name="volver">Volver</string>
@@ -61,7 +62,6 @@
     <string name="key_medida">medida</string>
     <string name="key_control">control</string>
     <string name="key_dificultad">dificultad</string>
-    <string name="consultar_partidas">Consultar partidas</string>
     <string name="detalles_de_la_partida">Detalles de la partida…</string>
 
     <!--Log-->

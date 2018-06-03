@@ -11,5 +11,6 @@
     <color name="yellow">#c7dc3e</color>
     <color name="orange">#c15d00</color>
     <color name="dark_blue">#011771</color>
+    <color name="light_grey">#dfdfe1</color>
 
 </resources>

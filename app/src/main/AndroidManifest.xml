@@ -15,8 +15,8 @@
         <activity android:name=".activities.Resultados" android:label="Resultados"/>
         <activity android:name=".activities.configuration.Configuration" />
         <activity android:name=".activities.BaseActivity" />
-        <activity android:name=".activities.listado_partidas.AccessBDActivity" />
-        <activity android:name=".activities.listado_partidas.DetailRegActivity" />
+        <activity android:name=".activities.listado_partidas.AccessBDActivity" android:label="Listado partidas"/>
+        <activity android:name=".activities.listado_partidas.DetailRegActivity" android:label="Detalle partida"/>
         <activity android:name=".activities.juego.JuegoActivity" />
     </application>
 </manifest>

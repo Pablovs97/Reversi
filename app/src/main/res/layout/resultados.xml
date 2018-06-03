@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -15,89 +16,132 @@
         android:layout_height="wrap_content"
         android:text="@string/dia_y_hora"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textSize="@dimen/edTextSize"
         android:textStyle="bold" />
 
     <EditText
         android:id="@+id/dia_hora_et"
-        android:layout_width="250dp"
+        android:layout_width="@dimen/edSize"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical|start"
+        android:inputType="text"
         android:textColor="@color/black"
-        android:inputType="text" />
+        android:textSize="@dimen/edTextSize" />
 
     <TextView
         android:id="@+id/log_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/element_horizontal_margin"
+        android:layout_weight="1"
         android:text="@string/valores_del_log"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:gravity="center"
+        android:textSize="@dimen/edTextSize"
         android:textStyle="bold" />
 
     <EditText
         android:id="@+id/log_et"
-        android:layout_width="250dp"
+        android:layout_width="@dimen/edSize"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical"
-        android:gravity="top|start"
+        android:layout_weight="1"
+        android:gravity="center_vertical|start"
+        android:inputType="textMultiLine"
         android:maxLines="8"
-        android:textSize="18sp"
+        android:scrollbars="vertical"
         android:textColor="@color/black"
-        android:inputType="textMultiLine" />
+        android:textSize="@dimen/edTextSize" />
 
     <TextView
         android:id="@+id/email_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/element_horizontal_margin"
+        android:layout_weight="1"
         android:text="@string/e_mail_destinatario"
         android:textColor="@color/black"
-        android:textSize="18sp"
+        android:gravity="center"
+        android:textSize="@dimen/edTextSize"
         android:textStyle="bold" />
 
     <EditText
         android:id="@+id/email_et"
-        android:layout_width="250dp"
+        android:layout_width="@dimen/edSize"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/element_horizontal_margin"
+        android:layout_weight="1"
+        android:gravity="center_vertical|start"
         android:hint="@string/example_mail"
         android:inputType="textEmailAddress"
-        android:textColor="@color/black" />
+        android:textColor="@color/black"
+        android:textSize="@dimen/edTextSize" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_weight="2"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/element_horizontal_margin"
+                android:background="@drawable/shape_grid"
+                android:onClick="sendMail"
+                android:paddingEnd="@dimen/element_horizontal_margin"
+                android:paddingStart="@dimen/element_horizontal_margin"
+                android:layout_gravity="center"
+                android:textSize="@dimen/buttonTextSize"
+                android:text="@string/enviar_email"
+                android:textColor="@color/white" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/shape_grid"
+                android:onClick="nuevaPartida"
+                android:paddingEnd="@dimen/element_horizontal_margin"
+                android:layout_gravity="center"
+                android:textSize="@dimen/buttonTextSize"
+                android:paddingStart="@dimen/element_horizontal_margin"
+                android:text="@string/nueva_partida"
+                android:textColor="@color/white" />
+        </LinearLayout>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/element_horizontal_margin"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:background="@drawable/shape_grid"
-            android:onClick="sendMail"
+            android:onClick="consultarPartidas"
             android:paddingEnd="@dimen/element_horizontal_margin"
             android:paddingStart="@dimen/element_horizontal_margin"
-            android:text="@string/enviar_email"
-            android:textColor="@color/white" />
+            android:text="@string/consultar_partidas"
+            android:textColor="@color/white"
+            android:textSize="@dimen/buttonTextSize" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/shape_grid"
-            android:onClick="nuevaPartida"
-            android:paddingEnd="@dimen/element_horizontal_margin"
-            android:paddingStart="@dimen/element_horizontal_margin"
-            android:text="@string/nueva_partida"
-            android:textColor="@color/white" />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textSize="@dimen/buttonTextSize"
+                android:background="@drawable/shape_toast_grey"
+                android:onClick="salir"
+                android:text="@string/salir"
+                android:textColor="@color/white" />
     </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/element_horizontal_margin"
-        android:background="@drawable/shape_toast_grey"
-        android:onClick="salir"
-        android:text="@string/salir"
-        android:textColor="@color/white" />
+
+
 </LinearLayout>

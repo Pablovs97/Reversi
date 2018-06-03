@@ -22,56 +22,67 @@
         <TextView
             android:id="@+id/dia_hora_tv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
             android:text="@string/dia_y_hora"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="@dimen/edTextSize"
             android:textStyle="bold" />
 
         <EditText
             android:id="@+id/dia_hora_et"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="2"
             android:inputType="text"
+            android:textSize="@dimen/edTextSize"
             android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/log_tv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:layout_weight="1"
             android:layout_marginTop="@dimen/element_horizontal_margin"
             android:text="@string/valores_del_log"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="@dimen/edTextSize"
             android:textStyle="bold" />
 
         <EditText
             android:id="@+id/log_et"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="2"
             android:gravity="top|start"
             android:inputType="textMultiLine"
-            android:maxLines="1"
+            android:maxLines="8"
             android:scrollbars="vertical"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="@dimen/edTextSize" />
 
         <TextView
             android:id="@+id/email_tv"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:layout_weight="1"
             android:layout_marginTop="@dimen/element_horizontal_margin"
             android:text="@string/e_mail_destinatario"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="@dimen/edTextSize"
             android:textStyle="bold" />
 
         <EditText
             android:id="@+id/email_et"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="2"
             android:layout_marginBottom="@dimen/element_horizontal_margin"
             android:hint="@string/example_mail"
+            android:textSize="@dimen/edTextSize"
             android:inputType="textEmailAddress"
             android:textColor="@color/black" />
 
@@ -92,6 +103,7 @@
             android:paddingEnd="@dimen/element_vertical_margin"
             android:paddingStart="@dimen/element_vertical_margin"
             android:text="@string/enviar_email"
+            android:textSize="@dimen/buttonTextSize"
             android:textColor="@color/white" />
 
         <Button
@@ -101,6 +113,7 @@
             android:layout_marginTop="@dimen/element_horizontal_margin"
             android:background="@drawable/shape_grid"
             android:onClick="nuevaPartida"
+            android:textSize="@dimen/buttonTextSize"
             android:paddingEnd="@dimen/element_vertical_margin"
             android:paddingStart="@dimen/element_vertical_margin"
             android:text="@string/nueva_partida"
@@ -109,9 +122,22 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/element_horizontal_margin"
+            android:background="@drawable/shape_grid"
+            android:onClick="consultarPartidas"
+            android:textSize="@dimen/buttonTextSize"
+            android:paddingEnd="@dimen/element_vertical_margin"
+            android:paddingStart="@dimen/element_vertical_margin"
+            android:text="@string/consultar_partidas"
+            android:textColor="@color/white" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/shape_toast_grey"
             android:onClick="salir"
             android:text="@string/salir"
+            android:textSize="@dimen/buttonTextSize"
             android:textColor="@color/white" />
     </LinearLayout>
 

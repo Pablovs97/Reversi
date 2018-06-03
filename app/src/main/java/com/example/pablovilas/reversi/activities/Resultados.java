@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 
+import com.example.pablovilas.reversi.activities.listado_partidas.AccessBDActivity;
 import com.example.pablovilas.reversi.bbdd.PartidasBD;
 import com.example.pablovilas.reversi.R;
 
@@ -77,5 +78,10 @@ public class Resultados extends AppCompatActivity{
 
     public void salir(View view){
         finishAffinity();
+    }
+
+    public void consultarPartidas(View view) {
+        finish();
+        startActivity(new Intent(this, AccessBDActivity.class));
     }
 }

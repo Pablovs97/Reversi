@@ -3,10 +3,12 @@ package com.example.pablovilas.reversi.activities.listado_partidas;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
 
 import com.example.pablovilas.reversi.R;
+import com.example.pablovilas.reversi.activities.BaseActivity;
 
-public class AccessBDActivity extends FragmentActivity implements QueryFrag.ResultadoListener {
+public class AccessBDActivity extends BaseActivity implements QueryFrag.ResultadoListener {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,5 +30,9 @@ public class AccessBDActivity extends FragmentActivity implements QueryFrag.Resu
             intent.putExtra("str", str);
             startActivity(intent);
         }
+    }
+
+    public void volver(View view) {
+        finish();
     }
 }

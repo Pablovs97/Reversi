@@ -21,6 +21,9 @@
 
     <!-- Consultar partidas -->
     <dimen name="ListViewItemSize">14sp</dimen>
+    <dimen name="statusImageSize">25dp</dimen>
+    <dimen name="edTextSize">18sp</dimen>
+    <dimen name="edSize">250dp</dimen>
 
 
 </resources>

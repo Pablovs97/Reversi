@@ -12,7 +12,7 @@
 
     <ImageView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/logoHeightSize"
         android:layout_weight="1"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/element_horizontal_margin"
@@ -32,6 +32,7 @@
             android:layout_gravity="center"
             android:background="@drawable/shape_grid"
             android:onClick="muestraAyuda"
+            android:textSize="@dimen/buttonTextSize"
             android:text="@string/ayuda"
             android:textColor="@color/white" />
 
@@ -39,6 +40,7 @@
             android:id="@+id/comenzar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/buttonTextSize"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/activity_horizontal_margin"
@@ -53,16 +55,17 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/activity_horizontal_margin"
             android:background="@drawable/shape_grid"
             android:onClick="consultarPartidas"
             android:text="@string/consultar_partidas"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="@dimen/buttonTextSize" />
 
         <Button
             android:id="@+id/salir"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/buttonTextSize"
             android:layout_gravity="center"
             android:background="@drawable/shape_grid"
             android:onClick="salir"

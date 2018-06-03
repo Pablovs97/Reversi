@@ -13,5 +13,8 @@
 
     <!-- Consultar partidas -->
     <dimen name="ListViewItemSize">14sp</dimen>
+    <dimen name="statusImageSize">50dp</dimen>
+    <dimen name="edTextSize">36sp</dimen>
+    <dimen name="edSize">500dp</dimen>
 
 </resources>
