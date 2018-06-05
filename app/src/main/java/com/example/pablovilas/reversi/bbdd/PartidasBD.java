@@ -104,4 +104,16 @@ public class PartidasBD extends SQLiteOpenHelper {
         cursor.close();
         return partida;
     }
+
+    // Elimina una partida en la base de datos.
+    public void deletePartida(int position){
+        String query = "SELECT  * FROM " + TABLE_NAME;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToPosition(position)) {
+            db.delete(TABLE_NAME, "date=?", new String[]{cursor.getString(2)});
+        }
+        cursor.close();
+    }
 }

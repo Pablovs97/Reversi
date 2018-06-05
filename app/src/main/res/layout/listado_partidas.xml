@@ -8,7 +8,7 @@
     <ListView
         android:id="@+id/lv"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:choiceMode="singleChoice"
-        android:listSelector="@color/light_grey"/>
+        android:layout_height="wrap_content"/>
+        <!--android:choiceMode="singleChoice"
+        android:listSelector="@color/light_grey"-->
 </android.support.constraint.ConstraintLayout>

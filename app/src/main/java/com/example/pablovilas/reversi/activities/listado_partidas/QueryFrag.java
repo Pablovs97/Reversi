@@ -5,7 +5,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,12 +24,16 @@ import com.example.pablovilas.reversi.bbdd.PartidasBD;
 import com.example.pablovilas.reversi.bbdd.PartidasClass;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class QueryFrag extends Fragment {
 
     private ResultadoListener listener;
     private List<PartidasClass> entries;
+    private ListView lv;
+    private AdaptadorPartidas adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -42,8 +50,11 @@ public class QueryFrag extends Fragment {
         entries = pdb.allPartidas();
 
         // Añadimos al listView el adaptador personalizado.
-        ListView lv = (ListView) getView().findViewById(R.id.lv);
-        lv.setAdapter(new AdaptadorPartidas(this));
+        lv = (ListView) getView().findViewById(R.id.lv);
+        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        lv.setMultiChoiceModeListener(new MultiChoiceListener());
+        adapter = new AdaptadorPartidas(this);
+        lv.setAdapter(adapter);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -64,9 +75,23 @@ public class QueryFrag extends Fragment {
         });
     }
 
+    // Interfaz listener
+    public interface ResultadoListener {
+        void onResultadoSeleccionado(String str);
+    }
+
+    // Set listener
+    public void setResultadoListener(ResultadoListener listener) {
+        this.listener = listener;
+    }
+
+    // Adapter personalizado, consistente en varios textViews(Alias, fecha, estado final de la partida)
+    // un ImageView, referente al estado final de la partida y una imagen que es mostrada cuando el item
+    // es seleccionado.
     class AdaptadorPartidas extends ArrayAdapter<PartidasClass> {
 
         Activity context;
+        Set<Integer> positions = new HashSet<>();
 
         AdaptadorPartidas(QueryFrag fragmentListado) {
             super(fragmentListado.getActivity(), R.layout.listview_item, entries);
@@ -116,7 +141,17 @@ public class QueryFrag extends Fragment {
                     break;
             }
 
+            ImageView checkbox = (ImageView) item.findViewById(R.id.checkbox);
+
+            if (positions != null && positions.contains(position)){
+                checkbox.setBackgroundResource(R.drawable.checkbox);
+            }
+
             return(item);
+        }
+
+        public void setSelectedPartidas(Set<Integer> positions){
+            this.positions = positions;
         }
     }
 
@@ -124,11 +159,78 @@ public class QueryFrag extends Fragment {
         Toast.makeText(getActivity(), text, Toast.LENGTH_LONG).show();
     }
 
-    public interface ResultadoListener {
-        void onResultadoSeleccionado(String str);
-    }
+    // MultiChoiceListener, actionmode que nos permitirá seleccionar una o varias partidas y
+    // realizar acciones sobre ellas.
+    private class MultiChoiceListener implements ListView.MultiChoiceModeListener {
+        int selectionCount;
+        Set<Integer> selectedItemsPosition = new HashSet<>();
+        PartidasBD pdb = new PartidasBD(getActivity());
 
-    public void setResultadoListener(ResultadoListener listener) {
-        this.listener = listener;
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.listado_partidas, menu);
+            mode.setTitle(R.string.partida_seleccionada);
+            setSubtitle(mode);
+            return true;
+        }
+
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return true;
+        }
+
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.eliminar:
+                    Toast.makeText(getActivity(), "Shared " + lv.getCheckedItemCount() + " items", Toast.LENGTH_SHORT).show();
+                    removeSelectedPartidas();
+                    mode.finish();
+                    break;
+                default:
+                    Toast.makeText(getActivity(), "Clicked " + item.getTitle(), Toast.LENGTH_SHORT).show();
+                    break;
+            }
+            return true;
+        }
+
+        public void onDestroyActionMode(ActionMode mode) {}
+
+        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            if (checked) {
+                selectionCount++;
+                selectedItemsPosition.add(position);
+                adapter.setSelectedPartidas(selectedItemsPosition);
+                adapter.notifyDataSetChanged();
+            } else {
+                selectionCount--;
+                selectedItemsPosition.remove(position);
+                adapter.notifyDataSetChanged();
+            }
+
+            setSubtitle(mode);
+        }
+
+        private void setSubtitle(ActionMode mode) {
+            final int checkedCount = lv.getCheckedItemCount();
+            switch (checkedCount) {
+                case 0:
+                    mode.setSubtitle(null);
+                    break;
+                case 1:
+                    mode.setSubtitle(R.string.una_seleccionada);
+                    break;
+                default:
+                    mode.setSubtitle(checkedCount + " " + getString(R.string.varias_seleccionadas));
+                    break;
+            }
+        }
+
+        private void removeSelectedPartidas() {
+            for(int pos: selectedItemsPosition){
+                selectedItemsPosition.remove(pos);
+                pdb.deletePartida(pos);
+            }
+            entries = pdb.allPartidas();
+            adapter.notifyDataSetChanged();
+        }
     }
 }
