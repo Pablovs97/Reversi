@@ -25,5 +25,8 @@
     <dimen name="edTextSize">18sp</dimen>
     <dimen name="edSize">250dp</dimen>
 
+    <!-- Toast personalizado -->
+    <dimen name="toastImageSize">30dp</dimen>
+    <dimen name="toastTextSize">16sp</dimen>
 
 </resources>

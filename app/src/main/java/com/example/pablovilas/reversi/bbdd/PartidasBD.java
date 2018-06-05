@@ -4,9 +4,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class PartidasBD extends SQLiteOpenHelper {
 
@@ -106,13 +109,18 @@ public class PartidasBD extends SQLiteOpenHelper {
     }
 
     // Elimina una partida en la base de datos.
-    public void deletePartida(int position){
+    public void deletePartida(List<Integer> positions){
+        Collections.sort(positions, Collections.reverseOrder());
         String query = "SELECT  * FROM " + TABLE_NAME;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
-        if (cursor.moveToPosition(position)) {
-            db.delete(TABLE_NAME, "date=?", new String[]{cursor.getString(2)});
+        for(int position: positions){
+            if (cursor.moveToPosition(position)) {
+                Log.d("pos", String.valueOf(position));
+                Log.d("date", cursor.getString(2));
+                db.delete(TABLE_NAME, "date=?", new String[]{cursor.getString(2)});
+            }
         }
         cursor.close();
     }

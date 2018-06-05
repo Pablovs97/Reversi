@@ -72,9 +72,13 @@
     <string name="log_casilla">\n\t\tCasilla seleccionada (%d,%d)</string>
     <string name="log_casillas">\n\t\tNº casillas pendientes = %d\n\t\tTiempo ini. tirada: %s\n\t\tTiempo fin. tirada: %s</string>
     <string name="log_tiempo">\n\t\tTiempo restante = %s</string>
+
+    <!--Listado partidas-->
     <string name="eliminar">Eliminar</string>
     <string name="partida_seleccionada">Partida seleccionada</string>
     <string name="una_seleccionada">Una partida seleccionada</string>
     <string name="varias_seleccionadas">partidas seleccionadas</string>
+    <string name="una_eliminada">Partida eliminada correctamente</string>
+    <string name="varias_eliminada">partidas eliminadas correctamente</string>
 
 </resources>

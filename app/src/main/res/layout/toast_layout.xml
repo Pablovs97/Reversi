@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/toast_iv"
-            android:layout_width="30dp"
-            android:layout_height="30dp"/>
+            android:layout_width="@dimen/toastImageSize"
+            android:layout_height="@dimen/toastImageSize"/>
 
         <LinearLayout
             android:orientation="vertical"
@@ -31,7 +31,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:textColor="#ffffff"
-                android:textSize="16sp"
+                android:textSize="@dimen/toastTextSize"
                 android:gravity="center"/>
 
         </LinearLayout>

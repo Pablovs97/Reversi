@@ -1,11 +1,15 @@
 package com.example.pablovilas.reversi.activities.listado_partidas;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.ShareActionProvider;
+import android.util.Log;
 import android.view.ActionMode;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,6 +28,7 @@ import com.example.pablovilas.reversi.bbdd.PartidasBD;
 import com.example.pablovilas.reversi.bbdd.PartidasClass;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -91,7 +96,7 @@ public class QueryFrag extends Fragment {
     class AdaptadorPartidas extends ArrayAdapter<PartidasClass> {
 
         Activity context;
-        Set<Integer> positions = new HashSet<>();
+        List<Integer> positions = new ArrayList<>();
 
         AdaptadorPartidas(QueryFrag fragmentListado) {
             super(fragmentListado.getActivity(), R.layout.listview_item, entries);
@@ -150,7 +155,7 @@ public class QueryFrag extends Fragment {
             return(item);
         }
 
-        public void setSelectedPartidas(Set<Integer> positions){
+        public void setSelectedPartidas(List<Integer> positions){
             this.positions = positions;
         }
     }
@@ -162,9 +167,9 @@ public class QueryFrag extends Fragment {
     // MultiChoiceListener, actionmode que nos permitirá seleccionar una o varias partidas y
     // realizar acciones sobre ellas.
     private class MultiChoiceListener implements ListView.MultiChoiceModeListener {
-        int selectionCount;
-        Set<Integer> selectedItemsPosition = new HashSet<>();
-        PartidasBD pdb = new PartidasBD(getActivity());
+        private int selectionCount;
+        private List<Integer> selectedItemsPosition = new ArrayList<>();
+        private PartidasBD pdb = new PartidasBD(getActivity());
 
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = getActivity().getMenuInflater();
@@ -202,7 +207,7 @@ public class QueryFrag extends Fragment {
                 adapter.notifyDataSetChanged();
             } else {
                 selectionCount--;
-                selectedItemsPosition.remove(position);
+                selectedItemsPosition.remove(Integer.valueOf(position));
                 adapter.notifyDataSetChanged();
             }
 
@@ -225,12 +230,39 @@ public class QueryFrag extends Fragment {
         }
 
         private void removeSelectedPartidas() {
-            for(int pos: selectedItemsPosition){
-                selectedItemsPosition.remove(pos);
-                pdb.deletePartida(pos);
-            }
+            pdb.deletePartida(selectedItemsPosition);
             entries = pdb.allPartidas();
-            adapter.notifyDataSetChanged();
+            adapter = new AdaptadorPartidas(QueryFrag.this);
+            lv.setAdapter(adapter);
+
+            if (selectedItemsPosition.size() == 1){
+                showToast(R.drawable.shape_toast_red, R.drawable.delete, getString(R.string.una_eliminada));
+            } else {
+                showToast(R.drawable.shape_toast_red, R.drawable.delete, selectedItemsPosition.size() + " " + getString(R.string.varias_eliminada));
+            }
+
+            listener.onResultadoSeleccionado("");
+
+            selectedItemsPosition = new ArrayList<>();
         }
+    }
+
+    // Muestra el Toast personalizado, el cuál consta de un ImageView y un TextView.
+    public void showToast(int toast_shape, int image, String msg){
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.toast_layout, (ViewGroup) getView().findViewById(R.id.toast));
+        layout.setBackgroundResource(toast_shape);
+
+        ImageView imageView = (ImageView) layout.findViewById(R.id.toast_iv);
+        imageView.setBackgroundResource(image);
+
+        TextView text = (TextView) layout.findViewById(R.id.toast_tv);
+        text.setText(msg);
+
+        Toast toast = new Toast(getActivity());
+        toast.setGravity(Gravity.BOTTOM, 0, 50);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
     }
 }
