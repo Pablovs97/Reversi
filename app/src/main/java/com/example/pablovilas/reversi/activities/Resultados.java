@@ -20,6 +20,7 @@ import java.util.Locale;
 public class Resultados extends AppCompatActivity{
 
     private EditText dia_hora, log, email;
+    private boolean added;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,13 @@ public class Resultados extends AppCompatActivity{
         Intent intent = getIntent();
         log.setText(intent.getStringExtra("Log"));
 
-        insertPartida(intent, dateFormat.format(date));
+        if(savedInstanceState != null){
+            added = savedInstanceState.getBoolean("added", false);
+        }
+
+        if(!added){
+            insertPartida(intent, dateFormat.format(date));
+        }
     }
 
     // Inserta partida en la base de datos
@@ -56,6 +63,7 @@ public class Resultados extends AppCompatActivity{
         partida.setState(intent.getStringExtra("state"));
 
         pdb.insertPartida(partida);
+        added = true;
     }
 
     public void sendMail(View view) {
@@ -78,5 +86,11 @@ public class Resultados extends AppCompatActivity{
     public void consultarPartidas(View view) {
         finish();
         startActivity(new Intent(this, AccessBDActivity.class));
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("added", added);
     }
 }

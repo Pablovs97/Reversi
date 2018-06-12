@@ -6,20 +6,13 @@
 
     <item android:id="@+id/cambiar_alias"
         android:title="@string/cambiar_alias"
-        android:orderInCategory="3"
+        android:orderInCategory="1"
         app:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_edit"/>
 
-    <item
-        android:id="@+id/compartir"
-        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"
-        app:showAsAction="always"
-        android:orderInCategory="2"
-        android:title="@string/compartir" />
-
     <item android:id="@+id/eliminar"
         android:title="@string/eliminar"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         app:showAsAction="ifRoom"
         android:icon="@android:drawable/ic_menu_delete"/>
 </menu>

@@ -10,9 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.SearchView;
+import android.view.ActionMode;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
-import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -246,24 +246,10 @@ public class QueryFrag extends Fragment {
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.listado_partidas, menu);
-            MenuItem item = menu.findItem(R.id.compartir);
             mActionMode = mode;
-            shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
-            if(shareActionProvider != null){
-                shareActionProvider.setShareIntent(compartir());
-            } else {
-                Log.d("asdasdasd", "asdadsadad");
-            }
             mode.setTitle(R.string.partida_seleccionada);
             setSubtitle(mode);
             return true;
-        }
-
-        private Intent compartir(){
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-            intent.putExtra(Intent.EXTRA_TEXT, "asdasdadsasd");
-            return intent;
         }
 
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
@@ -351,6 +337,9 @@ public class QueryFrag extends Fragment {
                                 alias.setError("No puedes dejar vacío este campo");
                             } else {
                                 pdb.cambiar_alias_partidas(selectedItemsPosition, alias.getEditText().getText().toString());
+                                entries = pdb.allPartidas();
+                                adapter = new AdaptadorPartidas(QueryFrag.this);
+                                lv.setAdapter(adapter);
 
                                 if (selectedItemsPosition.size() == 1){
                                     showToast(R.drawable.shape_toast_red, R.drawable.delete, getString(R.string.una_eliminada));
