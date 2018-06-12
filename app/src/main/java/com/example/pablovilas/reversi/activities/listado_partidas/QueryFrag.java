@@ -2,10 +2,14 @@ package com.example.pablovilas.reversi.activities.listado_partidas;
 
 import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.ActionMode;
@@ -18,31 +22,82 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.pablovilas.reversi.R;
 import com.example.pablovilas.reversi.bbdd.PartidasBD;
 import com.example.pablovilas.reversi.bbdd.PartidasClass;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class QueryFrag extends Fragment {
 
     private ResultadoListener listener;
-    private List<PartidasClass> entries;
+    private ActionMode mActionMode;
+    private int selected;
+    private static List<PartidasClass> entries;
     private ListView lv;
     private AdaptadorPartidas adapter;
+    private SearchView searchView;
+    private List<PartidasClass> arraylist = new ArrayList<>();
+    ShareActionProvider shareActionProvider;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.listado_partidas, container, false);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onAttach(Context c) {
+        super.onAttach(c);
+        try {
+            listener = (ResultadoListener) c;
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(c.toString() + " must implement onResultadoSeleccionado");
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.search, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+        searchView = (SearchView) item.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.filter(newText);
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                arraylist.addAll(entries);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @Override
@@ -67,7 +122,7 @@ public class QueryFrag extends Fragment {
                 if(listener!=null){
                     // Conseguir la partida seleccionada.
                     PartidasClass selectedPartida = pdb.getSelectedPartida(pos);
-
+                    selected = pos;
                     listener.onResultadoSeleccionado(selectedPartida.getState() + "\n" +
                             "Alias: " + selectedPartida.getAlias() + "\n" +
                             "Fecha: " + selectedPartida.getDate() + "\n" +
@@ -158,6 +213,23 @@ public class QueryFrag extends Fragment {
         public void setSelectedPartidas(List<Integer> positions){
             this.positions = positions;
         }
+
+        public void filter(String charText) {
+            charText = charText.toLowerCase();
+            QueryFrag.entries.clear();
+
+            if (charText.length() == 0) {
+                QueryFrag.entries.addAll(arraylist);
+            } else {
+                for (PartidasClass par : arraylist) {
+                    if (par.getAlias().toLowerCase().contains(charText) || par.getDate().toLowerCase().contains(charText) || par.getState().toLowerCase().contains(charText)) {
+                        QueryFrag.entries.add(par);
+                    }
+                }
+            }
+
+            notifyDataSetChanged();
+        }
     }
 
     private void showToast(String text) {
@@ -174,21 +246,40 @@ public class QueryFrag extends Fragment {
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             MenuInflater inflater = getActivity().getMenuInflater();
             inflater.inflate(R.menu.listado_partidas, menu);
+            MenuItem item = menu.findItem(R.id.compartir);
+            mActionMode = mode;
+            shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+            if(shareActionProvider != null){
+                shareActionProvider.setShareIntent(compartir());
+            } else {
+                Log.d("asdasdasd", "asdadsadad");
+            }
             mode.setTitle(R.string.partida_seleccionada);
             setSubtitle(mode);
             return true;
         }
 
+        private Intent compartir(){
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, "asdasdadsasd");
+            return intent;
+        }
+
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            mActionMode = mode;
             return true;
         }
 
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            mActionMode = mode;
             switch (item.getItemId()) {
                 case R.id.eliminar:
-                    Toast.makeText(getActivity(), "Shared " + lv.getCheckedItemCount() + " items", Toast.LENGTH_SHORT).show();
-                    removeSelectedPartidas();
+                    eliminar_partidas_seleccionadas();
                     mode.finish();
+                    break;
+                case R.id.cambiar_alias:
+                    cambiar_alias_partidas_seleccionadas();
                     break;
                 default:
                     Toast.makeText(getActivity(), "Clicked " + item.getTitle(), Toast.LENGTH_SHORT).show();
@@ -197,9 +288,13 @@ public class QueryFrag extends Fragment {
             return true;
         }
 
-        public void onDestroyActionMode(ActionMode mode) {}
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = mode;
+            adapter.setSelectedPartidas(new ArrayList<Integer>());
+        }
 
         public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            mActionMode = mode;
             if (checked) {
                 selectionCount++;
                 selectedItemsPosition.add(position);
@@ -215,6 +310,7 @@ public class QueryFrag extends Fragment {
         }
 
         private void setSubtitle(ActionMode mode) {
+            mActionMode = mode;
             final int checkedCount = lv.getCheckedItemCount();
             switch (checkedCount) {
                 case 0:
@@ -229,7 +325,64 @@ public class QueryFrag extends Fragment {
             }
         }
 
-        private void removeSelectedPartidas() {
+        private void cambiar_alias_partidas_seleccionadas() {
+            View view = getLayoutInflater().inflate( R.layout.cambiar_alias, null);
+            final TextInputLayout alias = (TextInputLayout) view.findViewById(R.id.aliasWrapper);
+            final EditText editText = (EditText) view.findViewById(R.id.alias);
+            alias.setHint("Nuevo alias");
+            alias.setErrorEnabled(false);
+            final AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                    .setView(view)
+                    .setTitle("Cambiar Alias")
+                    .setMessage("Introduce el nuevo alias para las partidas seleccionadas")
+                    .setPositiveButton(android.R.string.ok, null)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create();
+
+            alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+                @Override
+                public void onShow(DialogInterface dialogInterface) {
+                    Button ok = ((AlertDialog) alertDialog).getButton(AlertDialog.BUTTON_POSITIVE);
+                    ok.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if(alias.getEditText().getText().toString().equals("")){
+                                alias.setError("No puedes dejar vacío este campo");
+                            } else {
+                                pdb.cambiar_alias_partidas(selectedItemsPosition, alias.getEditText().getText().toString());
+
+                                if (selectedItemsPosition.size() == 1){
+                                    showToast(R.drawable.shape_toast_red, R.drawable.delete, getString(R.string.una_eliminada));
+                                } else {
+                                    showToast(R.drawable.shape_toast_red, R.drawable.delete, selectedItemsPosition.size() + " " + getString(R.string.varias_eliminada));
+                                }
+
+                                if (selectedItemsPosition.contains(selected)){
+                                    listener.onResultadoSeleccionado("");
+                                }
+
+                                selectedItemsPosition = new ArrayList<>();
+                                mActionMode.finish();
+                                alertDialog.dismiss();
+                            }
+                        }
+                    });
+
+                    Button cancel = ((AlertDialog) alertDialog).getButton(AlertDialog.BUTTON_NEGATIVE);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            alertDialog.dismiss();
+                        }
+                    });
+                }
+            });
+
+            alertDialog.show();
+        }
+
+        private void eliminar_partidas_seleccionadas() {
             pdb.deletePartida(selectedItemsPosition);
             entries = pdb.allPartidas();
             adapter = new AdaptadorPartidas(QueryFrag.this);
@@ -241,7 +394,9 @@ public class QueryFrag extends Fragment {
                 showToast(R.drawable.shape_toast_red, R.drawable.delete, selectedItemsPosition.size() + " " + getString(R.string.varias_eliminada));
             }
 
-            listener.onResultadoSeleccionado("");
+            if (selectedItemsPosition.contains(selected)){
+                listener.onResultadoSeleccionado("");
+            }
 
             selectedItemsPosition = new ArrayList<>();
         }

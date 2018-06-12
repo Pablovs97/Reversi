@@ -8,9 +8,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,17 +18,14 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.pablovilas.reversi.R;
 import com.example.pablovilas.reversi.activities.ImageAdapter;
 import com.example.pablovilas.reversi.activities.Resultados;
-import com.example.pablovilas.reversi.activities.listado_partidas.QueryFrag;
 import com.example.pablovilas.reversi.logica_juego.Board;
 import com.example.pablovilas.reversi.logica_juego.Cell;
 import com.example.pablovilas.reversi.logica_juego.Game;
 import com.example.pablovilas.reversi.logica_juego.Position;
 import com.example.pablovilas.reversi.logica_juego.State;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -89,23 +84,12 @@ public class ParrillaFrag extends Fragment {
             }
         });
 
-        // Datos de la pantalla de configuración.
-        //Intent intent = getIntent();
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         medida = Integer.parseInt(prefs.getString(getResources().getString(R.string.key_medida), "8"));
         alias = prefs.getString(getResources().getString(R.string.key_alias), "Player 1");
         tiempo = medida*20;
         control_tiempo = prefs.getBoolean(getResources().getString(R.string.key_control), false);
         dificultad = prefs.getString(getResources().getString(R.string.key_dificultad), "Normal");
-
-        /*
-        medida = Integer.parseInt(intent.getStringExtra("Medida"));
-        alias = intent.getStringExtra("Alias");
-        tiempo = intent.getIntExtra("Tiempo", 0);
-        control_tiempo = intent.getBooleanExtra("Controlar", false);
-        dificultad = intent.getStringExtra("Dificultad");
-        */
 
         // CPU level y alias en pantalla.
         TextView cpu_level = (TextView) getView().findViewById(R.id.cpu_level);
@@ -150,6 +134,17 @@ public class ParrillaFrag extends Fragment {
         }
 
         initialLog();
+    }
+
+    @Override
+    public void onAttach(Context c) {
+        super.onAttach(c);
+        try {
+            listener = (UpgradeLogListener) c;
+        }
+        catch (ClassCastException e) {
+            throw new ClassCastException(c.toString() + " must implement onClickUpgradeLog");
+        }
     }
 
     public void initialLog(){

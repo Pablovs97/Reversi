@@ -75,10 +75,14 @@
 
     <!--Listado partidas-->
     <string name="eliminar">Eliminar</string>
-    <string name="partida_seleccionada">Partida seleccionada</string>
-    <string name="una_seleccionada">Una partida seleccionada</string>
-    <string name="varias_seleccionadas">partidas seleccionadas</string>
-    <string name="una_eliminada">Partida eliminada correctamente</string>
-    <string name="varias_eliminada">partidas eliminadas correctamente</string>
+    <string name="partida_seleccionada">Partidas</string>
+    <string name="una_seleccionada">Una selecc.</string>
+    <string name="varias_seleccionadas">selecc.</string>
+    <string name="una_eliminada">1 partida eliminada</string>
+    <string name="varias_eliminada">partidas eliminadas</string>
+    <string name="buscar">Buscar…</string>
+    <string name="cambiar_alias">Cambiar alias</string>
+    <string name="compartir">Compartir</string>
+    <string name="alias_edit">Alias</string>
 
 </resources>

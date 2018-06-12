@@ -26,9 +26,11 @@ public class AccessBDActivity extends BaseActivity implements QueryFrag.Resultad
             RegFrag fdetail = (RegFrag) getSupportFragmentManager().findFragmentById(R.id.fragmento_detalle);
             fdetail.mostrarDetalle(str);
         } else {
-            Intent intent = new Intent(this, DetailRegActivity.class);
-            intent.putExtra("str", str);
-            startActivity(intent);
+            if(!str.equals("")) {
+                Intent intent = new Intent(this, DetailRegActivity.class);
+                intent.putExtra("str", str);
+                startActivity(intent);
+            }
         }
     }
 

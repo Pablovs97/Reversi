@@ -1,5 +1,6 @@
 package com.example.pablovilas.reversi.bbdd;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -117,9 +118,24 @@ public class PartidasBD extends SQLiteOpenHelper {
 
         for(int position: positions){
             if (cursor.moveToPosition(position)) {
-                Log.d("pos", String.valueOf(position));
-                Log.d("date", cursor.getString(2));
                 db.delete(TABLE_NAME, "date=?", new String[]{cursor.getString(2)});
+            }
+        }
+        cursor.close();
+    }
+
+    public void cambiar_alias_partidas(List<Integer> positions, String newAlias){
+        Collections.sort(positions, Collections.reverseOrder());
+        String query = "SELECT  * FROM " + TABLE_NAME;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+
+        ContentValues cv = new ContentValues();
+        cv.put("alias", newAlias);
+
+        for(int position: positions){
+            if (cursor.moveToPosition(position)) {
+                db.update(TABLE_NAME, cv, "_id="+cursor.getString(0), null);
             }
         }
         cursor.close();
