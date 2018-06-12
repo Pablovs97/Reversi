@@ -86,7 +86,8 @@ public class ParrillaFrag extends Fragment {
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         medida = Integer.parseInt(prefs.getString(getResources().getString(R.string.key_medida), "8"));
-        alias = prefs.getString(getResources().getString(R.string.key_alias), "Player 1");
+        alias = prefs.getString(getResources().getString(R.string.key_alias), getString(R.string.p1));
+        if(alias.equals("")) alias = getString(R.string.p1);
         tiempo = medida*20;
         control_tiempo = prefs.getBoolean(getResources().getString(R.string.key_control), false);
         dificultad = prefs.getString(getResources().getString(R.string.key_dificultad), "Normal");

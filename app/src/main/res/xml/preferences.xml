@@ -6,7 +6,6 @@
         android:key="@string/key_alias"
         android:selectAllOnFocus="true"
         android:singleLine="true"
-        android:hint="This is my hint"
         android:dialogTitle="Introduce el alias"
         android:summary="Alias de Jugador"
         android:icon="@drawable/user"

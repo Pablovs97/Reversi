@@ -96,4 +96,15 @@ public class PartidasClass {
     public void setState(String state) {
         this.state = state;
     }
+
+    @Override
+    public String toString() {
+        return this.getState() + "\n" +
+                "Alias: " + this.getAlias() + "\n" +
+                "Fecha: " + this.getDate() + "\n" +
+                "Medida: " + this.getMedida() + "x" + this.getMedida() + " casillas\n" +
+                "Num. fichas negras: " + this.getNum_blacks() + "\n" +
+                "Num. fichas blancas: " + this.getNum_whites() + "\n" +
+                "Tiempo total: " + this.getTotal_time() + " segundos\n";
+    }
 }

@@ -44,7 +44,6 @@ public class QueryFrag extends Fragment {
     private AdaptadorPartidas adapter;
     private SearchView searchView;
     private List<PartidasClass> arraylist = new ArrayList<>();
-    ShareActionProvider shareActionProvider;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -120,16 +119,11 @@ public class QueryFrag extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> list, View view, int pos, long id) {
                 if(listener!=null){
+                    selected = pos;
+
                     // Conseguir la partida seleccionada.
                     PartidasClass selectedPartida = pdb.getSelectedPartida(pos);
-                    selected = pos;
-                    listener.onResultadoSeleccionado(selectedPartida.getState() + "\n" +
-                            "Alias: " + selectedPartida.getAlias() + "\n" +
-                            "Fecha: " + selectedPartida.getDate() + "\n" +
-                            "Medida: " + selectedPartida.getMedida() + "x" + selectedPartida.getMedida() + " casillas\n" +
-                            "Num. fichas negras: " + selectedPartida.getNum_blacks() + "\n" +
-                            "Num. fichas blancas: " + selectedPartida.getNum_whites() + "\n" +
-                            "Tiempo total: " + selectedPartida.getTotal_time() + " segundos\n");
+                    listener.onResultadoSeleccionado(selectedPartida.toString());
                 }
             }
         });
@@ -342,9 +336,9 @@ public class QueryFrag extends Fragment {
                                 lv.setAdapter(adapter);
 
                                 if (selectedItemsPosition.size() == 1){
-                                    showToast(R.drawable.shape_toast_red, R.drawable.delete, getString(R.string.una_eliminada));
+                                    showToast(R.drawable.shape_toast_grey, R.drawable.edit, getString(R.string.una_editada));
                                 } else {
-                                    showToast(R.drawable.shape_toast_red, R.drawable.delete, selectedItemsPosition.size() + " " + getString(R.string.varias_eliminada));
+                                    showToast(R.drawable.shape_toast_grey, R.drawable.edit, selectedItemsPosition.size() + " " + getString(R.string.varias_editadas));
                                 }
 
                                 if (selectedItemsPosition.contains(selected)){
